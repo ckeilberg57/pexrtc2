@@ -19,7 +19,7 @@
             if (!(chrome_ver > 38 || firefox_ver > 51)) {
                 id_join_pres.hidden = true;
             }
- 
+
             var bw = navigator.userAgent.indexOf("Mobile") == -1 ? "1280" : "192";
             var id_bandwidth = document.getElementById('id_bandwidth');
             for (var i = 0; i < id_bandwidth.children.length; i++) {
@@ -42,6 +42,7 @@
             } else {
                 document.getElementById('provider_selection').style.display = 'none';
             }
+            document.getElementById('form_controls').style.display = 'block';
         }
     </script>
 
@@ -54,6 +55,7 @@
             align-items: center;
             justify-content: center;
             background-color: #f4f4f4;
+            text-align: center;
         }
         #container {
             text-align: center;
@@ -80,7 +82,7 @@
         .radio-button input {
             margin-right: 10px;
         }
-        #provider_selection {
+        #provider_selection, #form_controls {
             display: none;
             margin: 20px;
         }
@@ -100,7 +102,9 @@
 
         <!-- Content -->
         <div id="maincontent" class="main site join">
-            <button onclick="generateAlias()" class="webrtcbutton">Generate Medical Consultation</button>
+            <div id="initial_controls">
+                <button onclick="generateAlias()" class="webrtcbutton">Generate Medical Consultation</button>
+            </div>
 
             <div id="provider_patient" style="display: none; margin: 20px;">
                 <label class="radio-button">
@@ -120,22 +124,23 @@
                 </select>
             </div>
 
-            <form id="id_form" action="conference.html" method="get">
-                <label for="id_alias" class="vh">Enter the conference alias</label>
-                <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput" readonly>
+            <div id="form_controls">
+                <form id="id_form" action="conference.html" method="get">
+                    <label for="id_alias" class="vh">Enter the conference alias</label>
+                    <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput" readonly>
 
-                <label for="id_bandwidth">Select Bandwidth</label>
-                <select name="bandwidth" class="webrtcinput" id="id_bandwidth">
-                    <option value="1920">Maximum Bandwidth (1920kbps)</option>
-                    <option value="1280" selected>High Bandwidth (1280kbps)</option>
-                    <option value="576">Medium Bandwidth (576kbps)</option>
-                    <option value="192">Low Bandwidth (192kbps)</option>
-                </select>
+                    <label for="id_bandwidth">Select Bandwidth</label>
+                    <select name="bandwidth" class="webrtcinput" id="id_bandwidth">
+                        <option value="1920">Maximum Bandwidth (1920kbps)</option>
+                        <option value="1280" selected>High Bandwidth (1280kbps)</option>
+                        <option value="576">Medium Bandwidth (576kbps)</option>
+                        <option value="192">Low Bandwidth (192kbps)</option>
+                    </select>
 
-                <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
-                <input type="submit" value="Present Screen Only" name="join_pres" id="id_join_pres" class="webrtcbutton">
-                <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
-            </form>
+                    <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
+                    <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
+                </form>
+            </div>
         </div>
         <!-- END Content -->
 
