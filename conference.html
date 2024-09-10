@@ -44,9 +44,16 @@
         }
         header {
             background-color: #0ebec7;
-            padding: 10px;
+            padding: 20px;
             color: white;
             text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 36px;
+            line-height: 1.2;
         }
         .webrtcbutton {
             background-color: #0ebec7;
@@ -110,6 +117,20 @@
             color: white;
             text-align: center;
             padding: 10px;
+        }
+        .cf {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .cf input[type="radio"] {
+            margin-right: 10px;
+        }
+        .cf label {
+            color: #FF7273;
+            font-size: 18px;
+            font-weight: bold;
         }
     </style>
 </head>
