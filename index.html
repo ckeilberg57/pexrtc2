@@ -1,9 +1,33 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
     <title>Pexip Health</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <meta name="robots" content="noindex, nofollow" />
+    <style>
+        /* Styling for the buttons */
+        .webrtcbutton {
+            background-color: grey;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 5px;
+            cursor: pointer;
+            width: 200px;
+            height: 50px;
+            border-radius: 5px;
+        }
+
+        /* Styling for the question text */
+        #providerPatientStep p {
+            color: white;
+            font-size: 18px;
+        }
+    </style>
     <script type='text/javascript'>
         window.onload = function() {
             var bw;
@@ -69,9 +93,9 @@
         <div id="providerPatientStep" style="display:none;">
             <p>Are you a provider or a patient?</p>
             <input type="radio" id="provider" name="role" value="provider" onclick="showProviderOptions()">
-            <label for="provider">Provider</label>
+            <label for="provider" style="color: white;">Provider</label>
             <input type="radio" id="patient" name="role" value="patient" onclick="showProviderOptions()">
-            <label for="patient">Patient</label>
+            <label for="patient" style="color: white;">Patient</label>
         </div>
 
         <!-- Provider Selection Step -->
