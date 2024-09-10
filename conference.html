@@ -6,7 +6,6 @@
     <meta name="robots" content="noindex, nofollow" />
     <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
     <script type="text/javascript" src="webui.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- For Chart.js -->
     <script type='text/javascript'>
     window.onload = function() {
         var url = window.location.href;
@@ -27,7 +26,7 @@
         // Initialize with the provided parameters
         initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
 
-        // Check if the video stream is active before showing the vitals dashboard
+        // Check if the video stream is active
         checkVideoStream();
     }
 
@@ -38,8 +37,6 @@
                 clearInterval(interval);
                 document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
                 populateVitals();
-                startSpO2Graph();
-                startEKGMonitor();
             }
         }, 500); // Check every 500ms
     }
@@ -51,85 +48,6 @@
         document.getElementById("height").innerText = "70 in";
         document.getElementById("weight").innerText = "150 lbs";
     }
-
-    function startSpO2Graph() {
-        var ctx = document.getElementById('spo2-chart').getContext('2d');
-        var spO2Chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'SpO2 Level (%)',
-                    borderColor: '#ff7273',
-                    backgroundColor: 'rgba(255, 114, 114, 0.2)',
-                    data: []
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        display: false // Hide x-axis labels
-                    },
-                    y: {
-                        min: 90,
-                        max: 100,
-                        ticks: {
-                            stepSize: 1
-                        }
-                    }
-                }
-            }
-        });
-
-        // Update the chart with random data
-        setInterval(function() {
-            if (spO2Chart.data.labels.length >= 20) {
-                spO2Chart.data.labels.shift();
-                spO2Chart.data.datasets[0].data.shift();
-            }
-            var newSpO2 = Math.floor(Math.random() * (100 - 92 + 1)) + 92;
-            spO2Chart.data.labels.push('');
-            spO2Chart.data.datasets[0].data.push(newSpO2);
-            spO2Chart.update();
-        }, 1000); // Update every second
-    }
-
-    function startEKGMonitor() {
-        var ekgCanvas = document.getElementById('ekg-monitor');
-        var ctx = ekgCanvas.getContext('2d');
-        var height = ekgCanvas.height;
-        var width = ekgCanvas.width;
-        var x = 0;
-        var y = height / 2;
-        var amplitude = height / 6;
-        var frequency = 0.1;
-        var phase = 0;
-
-        function drawEKG() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-
-            for (var i = 0; i < width; i++) {
-                var newY = height / 2 + amplitude * Math.sin(frequency * (i + phase));
-                ctx.lineTo(i, newY);
-            }
-
-            ctx.strokeStyle = '#0eb3c7';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            phase += 0.1;
-            x += 1;
-
-            if (x >= width) {
-                x = 0;
-            }
-
-            requestAnimationFrame(drawEKG);
-        }
-
-        drawEKG();
-    }
     </script>
 
     <meta name="robots" content="NONE,NOARCHIVE" />
@@ -139,14 +57,13 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: 350px; /* Adjust width as needed */
+        width: 300px; /* Adjust width as needed */
         height: 100%; /* Full height */
         background: #0a2136; /* Match background color */
         color: white; /* Text color */
         border-right: 2px solid #0eb3c7; /* Match border color */
         padding: 10px;
         box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        overflow: auto; /* Add scroll if content overflows */
     }
 
     #vitals-container h2 {
@@ -155,22 +72,6 @@
 
     #vitals-container p {
         margin: 10px 0;
-    }
-
-    .chart-container {
-        margin: 20px 0;
-    }
-
-    .chart-container canvas {
-        width: 100% !important; /* Make the canvas responsive */
-        height: 300px; /* Adjust height */
-    }
-
-    #ekg-monitor {
-        width: 100%;
-        height: 300px;
-        background-color: #0a2136;
-        border: 1px solid #0eb3c7;
     }
     </style>
 </head>
@@ -188,27 +89,75 @@
     <!-- Content -->
     <div id="vitals-container">
         <h2>Vitals Dashboard</h2>
-        <div>
-            <h3>Last Measurements</h3>
-            <p>Blood Pressure: <span id="bp">N/A</span></p>
-            <p>SpO2 Level: <span id="spO2">N/A</span></p>
-            <p>Temperature (F): <span id="temp">N/A</span></p>
-            <p>Height (in): <span id="height">N/A</span></p>
-            <p>Weight (lbs): <span id="weight">N/A</span></p>
-        </div>
-        <div class="chart-container">
-            <h3>Current Measurements</h3>
-            <h4>SpO2 Level</h4>
-            <canvas id="spo2-chart"></canvas>
-        </div>
-        <div class="chart-container">
-            <h4>EKG Monitor</h4>
-            <canvas id="ekg-monitor"></canvas>
-        </div>
+        <p>Blood Pressure: <span id="bp">N/A</span></p>
+        <p>SpO2 Level: <span id="spO2">N/A</span></p>
+        <p>Temperature (F): <span id="temp">N/A</span></p>
+        <p>Height (in): <span id="height">N/A</span></p>
+        <p>Weight (lbs): <span id="weight">N/A</span></p>
     </div>
 
-    <!-- Existing Content -->
-    <!-- (Rest of your existing HTML content) -->
+    <div id="selectrole" class="main site join hidden">
+        <h2>Select your role for this conference:</h2>
+        <form>
+            <div class="cf">
+                <input type="radio" value="1" name="role" id="id_guest" class="webrtcinput" checked>
+                <label for="id_guest">Guest</label>
+            </div>
+            <div class="cf">
+                <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
+                <label for="id_host">Host</label>
+            </div>
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
+        </form>
+    </div>
+
+    <div id="pinentry" class="main site join hidden">
+        <form onSubmit="return submitPinEntry();">
+            <label for="id_pin" class="vh">Enter the conference PIN</label>
+            <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
+        </form>
+    </div>
+
+    <div id="ivrentry" class="main site join hidden">
+        <form onSubmit="return submitIVREntry();">
+            <label for="id_room" class="vh">Enter the target extension</label>
+            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
+        </form>
+    </div>
+
+    <div id="maincontent" class="main cf hidden">
+        <section class="top">
+            <aside class="participants">
+                <h2 id="rosterheading">Participants</h2>
+                <div id="rosterlist" class="rosterlist">
+                    <ul id="rosterul"></ul>
+                </div>
+                <div id="selfview" class="selfview" hidden>
+                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
+                </div>
+            </aside>
+            <div id="videocontainer" class="videocontainer">
+                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
+            </div>
+        </section>
+
+        <footer id="controls" class="controls cf">
+            <ul>
+                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+                <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
+                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+                <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
+                <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
+                <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
+                <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
+            </ul>
+        </footer>
+    </div>
+    <!-- END Content -->
+
+    <div id="footer"> </div>
 </div>
 <!-- END Container -->
 
