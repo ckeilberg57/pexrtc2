@@ -25,7 +25,26 @@
         /* Styling for the question text */
         #providerPatientStep p {
             color: white;
-            font-size: 18px;
+            font-size: 36px;
+            text-align: center;
+        }
+
+        /* Positioning the provider selection dropdown */
+        #providerSelection {
+            margin-top: 50px; /* Adjusted for 2 inches lower position */
+        }
+
+        /* Button container to align buttons side by side */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            width: 420px;
+            margin: 20px auto; /* Center the button container */
+        }
+
+        /* Centering the content */
+        .center-content {
+            text-align: center;
         }
     </style>
     <script type='text/javascript'>
@@ -83,7 +102,7 @@
     <!-- END Header -->
 
     <!-- Content -->
-    <div id="maincontent" class="main site join">
+    <div id="maincontent" class="main site join center-content">
         <!-- Initial Step -->
         <div id="initialStep">
             <button type="button" onclick="startMedicalConsultation()" class="webrtcbutton">Generate a Medical Consultation</button>
@@ -122,8 +141,10 @@
                     <option value="192">Low Bandwidth (192kbps)</option>
                 </select>
 
-                <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
-                <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
+                <div class="button-container">
+                    <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
+                    <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
+                </div>
             </form>
         </div>
     </div>
