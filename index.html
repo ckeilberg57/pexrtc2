@@ -34,6 +34,15 @@
             document.getElementById('id_alias').value = alias;
             document.getElementById('provider_patient').style.display = 'block';
         }
+
+        function showProviderSelection() {
+            var role = document.querySelector('input[name="role"]:checked').value;
+            if (role === 'Provider') {
+                document.getElementById('provider_selection').style.display = 'block';
+            } else {
+                document.getElementById('provider_selection').style.display = 'none';
+            }
+        }
     </script>
 
     <meta name="robots" content="NONE,NOARCHIVE" />
@@ -71,6 +80,10 @@
         .radio-button input {
             margin-right: 10px;
         }
+        #provider_selection {
+            display: none;
+            margin: 20px;
+        }
     </style>
 </head>
 
@@ -91,20 +104,27 @@
 
             <div id="provider_patient" style="display: none; margin: 20px;">
                 <label class="radio-button">
-                    <input type="radio" name="role" value="Provider"> Provider
+                    <input type="radio" name="role" value="Provider" onclick="showProviderSelection()"> Provider
                 </label>
                 <label class="radio-button">
-                    <input type="radio" name="role" value="Patient"> Patient
+                    <input type="radio" name="role" value="Patient" onclick="showProviderSelection()"> Patient
                 </label>
+            </div>
+
+            <div id="provider_selection">
+                <label for="provider_name">Select a Provider</label>
+                <select name="provider" id="provider_name" class="webrtcinput">
+                    <option value="MDemo">MDemo</option>
+                    <option value="JDemo">JDemo</option>
+                    <option value="CDemo">CDemo</option>
+                </select>
             </div>
 
             <form id="id_form" action="conference.html" method="get">
                 <label for="id_alias" class="vh">Enter the conference alias</label>
-                <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput">
+                <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput" readonly>
 
-                <label for="id_name" class="vh">Enter your name</label>
-                <input type="text" value="" name="name" id="id_name" placeholder="Enter your name" required class="webrtcinput">
-
+                <label for="id_bandwidth">Select Bandwidth</label>
                 <select name="bandwidth" class="webrtcinput" id="id_bandwidth">
                     <option value="1920">Maximum Bandwidth (1920kbps)</option>
                     <option value="1280" selected>High Bandwidth (1280kbps)</option>
