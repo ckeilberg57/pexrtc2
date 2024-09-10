@@ -38,17 +38,21 @@
                 providerSelect.style.display = 'block';
                 nameField.style.display = 'none';
                 providerSelect.addEventListener('change', function() {
-                    providerDisplay.innerText = this.value;
+                    var providerName = this.value;
+                    providerDisplay.innerText = providerName;
+                    nameField.value = providerName; // Populate name field with selected provider
                     providerSelect.style.display = 'none'; // Hide provider select after selection
                 });
             } else if (role === 'patient') {
                 providerSelect.style.display = 'none';
                 providerDisplay.innerText = '';
                 nameField.style.display = 'block';
+                nameField.value = ''; // Clear the name field
             } else {
                 providerSelect.style.display = 'none';
                 providerDisplay.innerText = '';
                 nameField.style.display = 'none';
+                nameField.value = ''; // Clear the name field if no role is selected
             }
         });
     }
