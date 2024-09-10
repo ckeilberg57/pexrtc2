@@ -1,196 +1,108 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
 <head>
-    <title>Pexip Health</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <meta name="robots" content="noindex, nofollow" />
-    <script type='text/javascript'>
-        window.onload = function() {
-            var chrome_ver = 0;
-            var firefox_ver = 0;
-            var edge_ver = 0;
-            var safari_ver = 0;
+<title>Pexip Health</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<meta name="robots" content="noindex, nofollow" />
+<script type='text/javascript'>
+window.onload = function()
+{
+    var chrome_ver = 0;
+    var firefox_ver = 0;
+    var edge_ver = 0;
+    var safari_ver = 0;
 
-            if (navigator.userAgent.indexOf("Chrome") != -1) {
-                chrome_ver = parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10);
-            }
+    if (navigator.userAgent.indexOf("Chrome") != -1) {
+        chrome_ver = parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10);
+    }
 
-            if (navigator.userAgent.indexOf("Firefox") != -1) {
-                firefox_ver = parseInt(window.navigator.userAgent.match(/Firefox\/(\d+)\./)[1], 10);
-            }
+    if (navigator.userAgent.indexOf("Firefox") != -1) {
+        firefox_ver = parseInt(window.navigator.userAgent.match(/Firefox\/(\d+)\./)[1], 10);
+    }
 
-            if (navigator.userAgent.indexOf("Edge") != -1) {
-                edge_ver = parseInt(window.navigator.userAgent.match(/Edge\/\d+\.(\d+)/)[1], 10);
-                chrome_ver = 0;
-            }
+    if (navigator.userAgent.indexOf("Edge") != -1) {
+        edge_ver = parseInt(window.navigator.userAgent.match(/Edge\/\d+\.(\d+)/)[1], 10);
+        chrome_ver = 0;
+    }
 
-            if (chrome_ver == 0 && navigator.userAgent.indexOf("Safari") != -1) {
-                safari_ver = parseInt(window.navigator.appVersion.match(/Safari\/(\d+)\./)[1], 10);
-            }
+    if (self.chrome_ver == 0 && navigator.userAgent.indexOf("Safari") != -1) {
+        safari_ver = parseInt(window.navigator.appVersion.match(/Safari\/(\d+)\./)[1], 10);
+    }
 
-            var is_explorer = navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1;
+    var is_explorer = navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1;
 
-            var id_form = document.getElementById('id_form');
-            if (is_explorer || (safari_ver > 0 && safari_ver < 604)) {
-                id_form.action = "conference-flash.html";
-            }
+    var id_form = document.getElementById('id_form');
+    if (is_explorer || (safari_ver > 0 && safari_ver < 604)) {
+        id_form.action = "conference-flash.html";
+    }   
 
-            var id_join_pres = document.getElementById('id_join_pres');
-            if (!(chrome_ver > 38 || firefox_ver > 51)) {
-                id_join_pres.hidden = true;
-            }
-
-            var bw = navigator.userAgent.indexOf("Mobile") == -1 ? "1280" : "192";
-            var id_bandwidth = document.getElementById('id_bandwidth');
-            for (var i = 0; i < id_bandwidth.children.length; i++) {
-                if (id_bandwidth.children[i].value == bw) {
-                    id_bandwidth.children[i].selected = true;
-                }
-            }
+    var id_join_pres = document.getElementById('id_join_pres');
+    if (!(chrome_ver > 38|| firefox_ver > 51)) {
+        id_join_pres.hidden = true;
+    }
+ 
+    var bw;
+    if (navigator.userAgent.indexOf("Mobile") == -1) {
+        bw = "1280";
+    } else {
+        bw = "192";
+    }
+    
+    var id_bandwidth = document.getElementById('id_bandwidth');
+    for (var i = 0; i < id_bandwidth.children.length; i++) {
+        if (id_bandwidth.children[i].value == bw) {
+            id_bandwidth.children[i].selected = true;
         }
+    }
+}
+</script>
 
-        function generateAlias() {
-            var alias = 'ph' + Math.random().toString(36).substr(2, 15).toUpperCase();
-            document.getElementById('id_alias').value = alias;
-            document.getElementById('provider_patient').style.display = 'block';
-        }
-
-        function showProviderSelection() {
-            var role = document.querySelector('input[name="role"]:checked').value;
-            if (role === 'Provider') {
-                document.getElementById('provider_selection').style.display = 'block';
-            } else {
-                document.getElementById('provider_selection').style.display = 'none';
-            }
-            document.getElementById('form_controls').style.display = 'block';
-        }
-    </script>
-    <meta name="robots" content="NONE,NOARCHIVE" />
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            background-image: url('your-background-image.jpg'); /* Update with your image path */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #container {
-            background-color: rgba(255, 255, 255, 0.9); /* Optional: Add a semi-transparent background for readability */
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%; /* Adjust as needed */
-            max-width: 600px; /* Adjust as needed */
-        }
-
-        .webrtcbutton {
-            background-color: #0eb3c7;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 5px;
-            border-radius: 5px;
-        }
-
-        .radio-button {
-            margin: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #0eb3c7;
-            color: white;
-            display: block;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .radio-button input {
-            margin-right: 10px;
-        }
-
-        #provider_patient, #provider_selection, #form_controls {
-            display: none;
-            margin: 20px 0;
-        }
-
-        select.webrtcinput {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            margin: 10px 0;
-        }
-
-        input.webrtcinput {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            margin: 10px 0;
-        }
-    </style>
+<meta name="robots" content="NONE,NOARCHIVE" />
 </head>
 
 <body class="home">
-    <div id="container" class="site">
-        <!-- Header -->
-        <header id="header" class="branding" role="banner">
-            <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
-            <!-- <h1>Connect</h1> -->
-        </header>
-        <!-- END Header -->
 
-        <!-- Content -->
-        <div id="maincontent" class="main site join">
-            <div id="initial_controls">
-                <button onclick="generateAlias()" class="webrtcbutton">Generate Medical Consultation</button>
-            </div>
+<!-- Container -->
+<div id="container" class="site">
+    <!-- Header -->
+    <header id="header" class="branding" role="banner">
+        
+        <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
+        <!-- <h1>Connect</h1> -->
+        
+    </header>
+    <!-- END Header -->
 
-            <div id="provider_patient" style="display: none;">
-                <label class="radio-button">
-                    <input type="radio" name="role" value="Provider" onclick="showProviderSelection()"> Provider
-                </label>
-                <label class="radio-button">
-                    <input type="radio" name="role" value="Patient" onclick="showProviderSelection()"> Patient
-                </label>
-            </div>
+    <!-- Content -->
+    
+  <div id="maincontent" class="main site join">
+    <form id="id_form" action="conference.html" method="get">
+        <label for="id_alias" class="vh">Enter the conference alias</label>
+        <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput">
 
-            <div id="provider_selection">
-                <label for="provider_name">Select a Provider</label>
-                <select name="provider" id="provider_name" class="webrtcinput">
-                    <option value="MDemo">MDemo</option>
-                    <option value="JDemo">JDemo</option>
-                    <option value="CDemo">CDemo</option>
-                </select>
-            </div>
+        <label for="id_name" class="vh">Enter your name</label>
+        <input type="text" value="" name="name" id="id_name" placeholder="Enter your name" required class="webrtcinput">
 
-            <div id="form_controls">
-                <form id="id_form" action="conference.html" method="get">
-                    <label for="id_alias" class="vh">Enter the conference alias</label>
-                    <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput" readonly>
+        <select name="bandwidth" class="webrtcinput" id="id_bandwidth">
+            <option value="1920">Maximum Bandwidth (1920kbps)</option>
+            <option value="1280" selected>High Bandwidth (1280kbps)</option>
+            <option value="576">Medium Bandwidth (576kbps)</option>
+            <option value="192">Low Bandwidth (192kbps)</option>
+        </select>
 
-                    <label for="id_bandwidth">Select Bandwidth</label>
-                    <select name="bandwidth" class="webrtcinput" id="id_bandwidth">
-                        <option value="1920">Maximum Bandwidth (1920kbps)</option>
-                        <option value="1280" selected>High Bandwidth (1280kbps)</option>
-                        <option value="576">Medium Bandwidth (576kbps)</option>
-                        <option value="192">Low Bandwidth (192kbps)</option>
-                    </select>
+        <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
+        <input type="submit" value="Present Screen Only" name="join_pres" id="id_join_pres" class="webrtcbutton">
+        <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
+    </form>
+  </div>
 
-                    <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
-                    <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
-                </form>
-            </div>
-        </div>
-        <!-- END Content -->
+    <!-- END Content -->
 
-        <div id="footer"> </div>
-    </div>
-    <!-- END Container -->
+    <div id="footer"> </div>
+</div>
+<!-- END Container -->
+
 </body>
 </html>
