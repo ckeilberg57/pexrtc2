@@ -37,7 +37,7 @@
         }   
 
         var id_join_pres = document.getElementById('id_join_pres');
-        if (!(chrome_ver > 38|| firefox_ver > 51)) {
+        if (!(chrome_ver > 38 || firefox_ver > 51)) {
             id_join_pres.hidden = true;
         }
 
@@ -70,23 +70,38 @@
             const alias = generateAlias();
             document.getElementById('id_alias').value = alias; // Populate the alias in the conference alias input field
             document.getElementById('alias-display').innerText = alias; // Display the alias
+            document.getElementById('generate-button-container').style.display = 'none'; // Hide the button
         });
     }
     </script>
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
-        /* Basic styling to ensure the generate button is at the top */
+        /* Center the generate button */
         #generate-button-container {
-            margin: 20px;
+            text-align: center;
+            margin-top: 20px;
         }
 
         #generate-button {
+            display: inline-block;
+            background-color: #0ebec7; /* Match button color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
             margin-bottom: 20px;
         }
 
+        #generate-button:hover {
+            background-color: #0a9a9b; /* Darker shade on hover */
+        }
+
         #alias-display {
-            margin-top: 10px;
             font-weight: bold;
+            font-size: 18px;
+            margin-top: 10px;
         }
     </style>
 </head>
