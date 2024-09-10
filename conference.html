@@ -37,6 +37,7 @@
                 clearInterval(interval);
                 document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
                 populateVitals();
+                populateLastMeasurements(); // Populate last measurements
             }
         }, 500); // Check every 500ms
     }
@@ -47,6 +48,13 @@
         document.getElementById("temp").innerText = "98.6°F";
         document.getElementById("height").innerText = "70 in";
         document.getElementById("weight").innerText = "150 lbs";
+    }
+
+    function populateLastMeasurements() {
+        document.getElementById("ekg").innerText = "Normal";
+        document.getElementById("spO2-sample").innerText = "99%";
+        document.getElementById("weight-last").innerText = "155 lbs";
+        document.getElementById("height-last").innerText = "71 in";
     }
     </script>
 
@@ -73,6 +81,23 @@
     #vitals-container p {
         margin: 10px 0;
     }
+
+    #last-measurements-container {
+        margin-top: 20px; /* Space between vitals and last measurements */
+        padding: 10px;
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border: 1px solid #0eb3c7; /* Border color */
+        border-radius: 5px; /* Rounded corners */
+    }
+
+    #last-measurements-container h2 {
+        color: #0eb3c7; /* Heading color */
+    }
+
+    #last-measurements-container p {
+        margin: 10px 0;
+    }
     </style>
 </head>
 
@@ -94,6 +119,15 @@
         <p>Temperature (F): <span id="temp">N/A</span></p>
         <p>Height (in): <span id="height">N/A</span></p>
         <p>Weight (lbs): <span id="weight">N/A</span></p>
+    </div>
+
+    <!-- New Section for Last Measurements -->
+    <div id="last-measurements-container">
+        <h2>Last Measurements</h2>
+        <p>Sample EKG: <span id="ekg">N/A</span></p>
+        <p>Sample SpO2: <span id="spO2-sample">N/A</span></p>
+        <p>Last Weight: <span id="weight-last">N/A</span></p>
+        <p>Last Height: <span id="height-last">N/A</span></p>
     </div>
 
     <div id="selectrole" class="main site join hidden">
