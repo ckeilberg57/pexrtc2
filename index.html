@@ -71,6 +71,9 @@
             document.getElementById('id_alias').value = alias; // Populate the alias in the conference alias input field
             document.getElementById('alias-display').innerText = alias; // Display the alias
             document.getElementById('generate-button-container').style.display = 'none'; // Hide the button
+
+            // Show the form fields and buttons
+            document.getElementById('id_form').style.display = 'block';
         });
     }
     </script>
@@ -102,6 +105,11 @@
             font-weight: bold;
             font-size: 18px;
             margin-top: 10px;
+        }
+
+        /* Hide form fields and buttons initially */
+        #id_form {
+            display: none;
         }
     </style>
 </head>
