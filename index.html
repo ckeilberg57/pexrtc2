@@ -1,5 +1,4 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
 <head>
     <title>Pexip Health</title>
@@ -7,9 +6,6 @@
     <meta name="robots" content="noindex, nofollow" />
     <script type='text/javascript'>
         window.onload = function() {
-            // Your existing code for browser detection
-
-            // Auto-select bandwidth option based on browser type
             var bw;
             if (navigator.userAgent.indexOf("Mobile") == -1) {
                 bw = "1280";
@@ -33,12 +29,27 @@
             }
             document.getElementById('id_alias').value = alias;
         }
+
+        function startMedicalConsultation() {
+            generateRandomAlias();
+            document.getElementById('initialStep').style.display = 'none';
+            document.getElementById('providerPatientStep').style.display = 'block';
+        }
+
+        function showProviderOptions() {
+            var role = document.querySelector('input[name="role"]:checked').value;
+            if (role === 'provider') {
+                document.getElementById('providerSelection').style.display = 'block';
+            } else {
+                document.getElementById('providerSelection').style.display = 'none';
+            }
+            document.getElementById('bandwidthStep').style.display = 'block';
+        }
     </script>
     <meta name="robots" content="NONE,NOARCHIVE" />
 </head>
 
 <body class="home">
-
 <!-- Container -->
 <div id="container" class="site">
     <!-- Header -->
@@ -49,35 +60,52 @@
 
     <!-- Content -->
     <div id="maincontent" class="main site join">
-        <form id="id_form" action="conference.html" method="get">
-            <label for="id_alias" class="vh">Conference Alias</label>
-            <input type="text" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput">
+        <!-- Initial Step -->
+        <div id="initialStep">
+            <button type="button" onclick="startMedicalConsultation()" class="webrtcbutton">Generate a Medical Consultation</button>
+        </div>
 
-            <button type="submit" onclick="generateRandomAlias()" class="webrtcbutton">Generate Alias</button>
+        <!-- Provider/Patient Step -->
+        <div id="providerPatientStep" style="display:none;">
+            <p>Are you a provider or a patient?</p>
+            <input type="radio" id="provider" name="role" value="provider" onclick="showProviderOptions()">
+            <label for="provider">Provider</label>
+            <input type="radio" id="patient" name="role" value="patient" onclick="showProviderOptions()">
+            <label for="patient">Patient</label>
+        </div>
 
+        <!-- Provider Selection Step -->
+        <div id="providerSelection" style="display:none;">
             <label for="id_provider" class="vh">Select Provider</label>
             <select name="name" id="id_provider" class="webrtcinput" required>
                 <option value="MDemo">MDemo</option>
                 <option value="CDemo">CDemo</option>
                 <option value="JDemo">JDemo</option>
             </select>
+        </div>
 
-            <label for="id_bandwidth" class="vh">Bandwidth</label>
-            <select name="bandwidth" id="id_bandwidth" class="webrtcinput">
-                <option value="1920">Maximum Bandwidth (1920kbps)</option>
-                <option value="1280" selected>High Bandwidth (1280kbps)</option>
-                <option value="576">Medium Bandwidth (576kbps)</option>
-                <option value="192">Low Bandwidth (192kbps)</option>
-            </select>
+        <!-- Bandwidth Step -->
+        <div id="bandwidthStep" style="display:none;">
+            <form id="id_form" action="conference.html" method="get">
+                <label for="id_alias" class="vh">Conference Alias</label>
+                <input type="text" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput" readonly>
 
-            <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
-            <input type="submit" value="Present Screen Only" name="join_pres" id="id_join_pres" class="webrtcbutton">
-            <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
-        </form>
+                <label for="id_bandwidth" class="vh">Select Bandwidth</label>
+                <select name="bandwidth" id="id_bandwidth" class="webrtcinput">
+                    <option value="1920">Maximum Bandwidth (1920kbps)</option>
+                    <option value="1280" selected>High Bandwidth (1280kbps)</option>
+                    <option value="576">Medium Bandwidth (576kbps)</option>
+                    <option value="192">Low Bandwidth (192kbps)</option>
+                </select>
+
+                <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
+                <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
+            </form>
+        </div>
     </div>
     <!-- END Content -->
 
-    <div id="footer"> </div>
+    <div id="footer"></div>
 </div>
 <!-- END Container -->
 
