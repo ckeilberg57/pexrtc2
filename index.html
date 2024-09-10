@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
@@ -28,47 +29,9 @@ window.onload = function()
     //pin, source
     initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
 }
-
-function showVitals() {
-    document.getElementById('vitals-container').style.display = 'block';
-}
-
-function submitSelectRole() {
-    // Logic for role submission
-    showVitals();
-}
-
-function submitPinEntry() {
-    // Logic for PIN submission
-    showVitals();
-}
 </script>
 
 <meta name="robots" content="NONE,NOARCHIVE" />
-<style>
-  /* Add your custom styles here */
-  .container {
-    display: flex;
-    justify-content: space-between;
-  }
-  .vitals-container {
-    width: 300px; /* Adjust width as needed */
-    background: #f0f0f0; /* Light background color for the vitals section */
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.3); /* Optional shadow */
-    display: none; /* Initially hidden */
-  }
-  .video-container {
-    flex: 1;
-    background: #000; /* Set a background for the video container */
-    padding: 10px;
-  }
-  iframe {
-    border: none;
-    width: 100%;
-    height: 100%;
-  }
-</style>
 </head>
 
 <body class="home">
@@ -85,6 +48,7 @@ function submitPinEntry() {
     <!-- END Header -->
 
     <!-- Content -->
+
   <div id="selectrole" class="main site join hidden">
     <h2>Select your role for this conference:</h2>
     <form>
@@ -101,6 +65,7 @@ function submitPinEntry() {
     </form>
   </div>
 
+
   <div id="pinentry" class="main site join hidden">
     <form onSubmit="return submitPinEntry();">
         <label for="id_pin" class="vh">Enter the conference PIN</label>
@@ -109,6 +74,7 @@ function submitPinEntry() {
         <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
     </form>
   </div>
+
 
   <div id="ivrentry" class="main site join hidden">
     <form onSubmit="return submitIVREntry();">
@@ -119,12 +85,21 @@ function submitPinEntry() {
     </form>
   </div>
 
+ 
   <div id="maincontent" class="main cf hidden">
-    <section class="top container">
-      <aside id="vitals-container" class="vitals-container">
-        <iframe src="vitals.html" title="Vitals"></iframe>
+    <section class="top">
+      <aside class="participants"><!-- List of participants -->
+        <h2 id="rosterheading">Participants</h2>
+        <div id="rosterlist" class="rosterlist">
+          <ul id="rosterul">
+          </ul>
+        </div>
+        <div id="selfview" class="selfview" hidden>
+          <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true">
+          </video>
+        </div>
       </aside>
-      <div id="videocontainer" class="video-container">
+      <div id="videocontainer" class="videocontainer">
         <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
       </div>
     </section>
