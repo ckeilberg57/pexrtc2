@@ -52,10 +52,19 @@
     }
 
     function populateLastMeasurements() {
+        document.getElementById("ekg-img").src = "img/EKGSample.png"; // Update with actual path
         document.getElementById("ekg").innerText = "Normal";
         document.getElementById("spO2-sample").innerText = "99%";
         document.getElementById("weight-last").innerText = "155 lbs";
         document.getElementById("height-last").innerText = "71 in";
+    }
+
+    function updateVitals() {
+        document.getElementById("bp").innerText = "130/85 mmHg";
+        document.getElementById("spO2").innerText = "97%";
+        document.getElementById("temp").innerText = "99.1°F";
+        document.getElementById("height").innerText = "71 in";
+        document.getElementById("weight").innerText = "155 lbs";
     }
     </script>
 
@@ -100,6 +109,29 @@
     #last-measurements-container p {
         margin: 10px 0;
     }
+
+    #last-measurements-container img {
+        width: 100%;
+        height: auto;
+        margin-top: 10px;
+    }
+
+    .button {
+        display: inline-block;
+        background-color: #0eb3c7;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    .button:hover {
+        background-color: #0a8a9c;
+    }
     </style>
 </head>
 
@@ -121,12 +153,15 @@
         <p>Temperature (F): <span id="temp">N/A</span></p>
         <p>Height (in): <span id="height">N/A</span></p>
         <p>Weight (lbs): <span id="weight">N/A</span></p>
+        <button class="button" onclick="updateVitals()">Take New Measurement</button>
     </div>
 
     <!-- New Section for Last Measurements -->
     <div id="last-measurements-container">
         <h2>Last Measurements</h2>
-        <p>Sample EKG: <span id="ekg">N/A</span></p>
+        <p>Sample EKG:</p>
+        <img id="ekg-img" src="path/to/sample-ekg.png" alt="Sample EKG" /> <!-- Placeholder for EKG image -->
+        <p>Sample EKG Status: <span id="ekg">N/A</span></p>
         <p>Sample SpO2: <span id="spO2-sample">N/A</span></p>
         <p>Last Weight: <span id="weight-last">N/A</span></p>
         <p>Last Height: <span id="height-last">N/A</span></p>
