@@ -76,10 +76,18 @@
             document.getElementById('id_form').style.display = 'block';
         });
 
-        // Populate the name field when a provider is selected
-        document.getElementById('provider-select').addEventListener('change', function() {
+        // Update the name field based on user selection
+        document.getElementById('role-select').addEventListener('change', function() {
             var nameField = document.getElementById('id_name');
-            nameField.value = this.value;
+            if (this.value === 'provider') {
+                document.getElementById('provider-select').style.display = 'block';
+                document.getElementById('provider-select').addEventListener('change', function() {
+                    nameField.value = this.value;
+                });
+            } else {
+                document.getElementById('provider-select').style.display = 'none';
+                nameField.value = '';
+            }
         });
     }
     </script>
@@ -117,6 +125,11 @@
         #id_form {
             display: none;
         }
+
+        /* Hide provider select by default */
+        #provider-select {
+            display: none;
+        }
     </style>
 </head>
 
@@ -143,7 +156,14 @@
             <label for="id_alias" class="vh">Enter the conference alias</label>
             <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput">
 
-            <label for="provider-select" class="vh">Select a provider</label>
+            <label for="role-select" class="vh">You are a</label>
+            <select id="role-select" class="webrtcinput">
+                <option value="">Select role</option>
+                <option value="provider">Provider</option>
+                <option value="patient">Patient</option>
+            </select>
+
+            <label for="provider-select" class="vh" id="provider-label">Select a provider</label>
             <select id="provider-select" class="webrtcinput">
                 <option value="">Select a provider</option>
                 <option value="Dr. JDemo">Dr. JDemo</option>
