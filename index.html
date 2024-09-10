@@ -1,174 +1,150 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
 <head>
-    <title>Pexip Health</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <meta name="robots" content="noindex, nofollow" />
-    <style>
-        /* Styling for the buttons */
-        .webrtcbutton {
-            background-color: grey;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 10px 5px;
-            cursor: pointer;
-            width: 200px;
-            height: 50px;
-            border-radius: 5px;
-        }
+<title>] Pexip Health[</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+<meta name="robots" content="noindex, nofollow" />
+<script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
+<script type="text/javascript" src="webui.js"></script>
+<script type='text/javascript'>
+window.onload = function()
+{
+    var url = window.location.href;
+    var params = url.substr(url.indexOf("?")+1).split("&");
+    var i;
+    var qp = {};
+    for (i=0;i<params.length;i++) {
+        var kv = params[i].split("=");
+        qp[kv[0]] = kv[1];
+    }
+    console.log(qp);
 
-        /* Styling for the question text */
-        #providerPatientStep p {
-            color: white;
-            font-size: 40px; /* Increased size */
-            text-align: center;
-            margin-bottom: 20px; /* Added space between text and buttons */
-        }
+    var source = "";
+    if ("join_pres" in qp) {
+        source = "screen";
+    }
 
-        /* Styling for the provider and patient selects */
-        .radio-group {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 40px; /* Added space below the radio buttons */
-        }
+    //pin, source
+    initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+}
 
-        .radio-group label {
-            color: #0eb3c7;
-            font-size: 24px;
-        }
+function showVitals() {
+    document.getElementById('vitals-container').style.display = 'block';
+}
 
-        /* Positioning the provider selection dropdown */
-        #providerSelection {
-            margin-top: 50px; /* Adjusted for 2 inches lower position */
-            text-align: center;
-        }
+function submitSelectRole() {
+    // Logic for role submission
+    showVitals();
+}
 
-        /* Button container to align buttons side by side */
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            width: 420px;
-            margin: 20px auto; /* Center the button container */
-        }
+function submitPinEntry() {
+    // Logic for PIN submission
+    showVitals();
+}
+</script>
 
-        /* Centering the content */
-        .center-content {
-            text-align: center;
-        }
-    </style>
-    <script type='text/javascript'>
-        window.onload = function() {
-            var bw;
-            if (navigator.userAgent.indexOf("Mobile") == -1) {
-                bw = "1280";
-            } else {
-                bw = "192";
-            }
-            
-            var id_bandwidth = document.getElementById('id_bandwidth');
-            for (var i = 0; i < id_bandwidth.children.length; i++) {
-                if (id_bandwidth.children[i].value == bw) {
-                    id_bandwidth.children[i].selected = true;
-                }
-            }
-        }
-
-        function generateRandomAlias() {
-            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            var alias = 'ph';
-            for (var i = 0; i < 14; i++) {
-                alias += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            document.getElementById('id_alias').value = alias;
-        }
-
-        function startMedicalConsultation() {
-            generateRandomAlias();
-            document.getElementById('initialStep').style.display = 'none';
-            document.getElementById('providerPatientStep').style.display = 'block';
-        }
-
-        function showProviderOptions() {
-            var role = document.querySelector('input[name="role"]:checked').value;
-            if (role === 'provider') {
-                document.getElementById('providerSelection').style.display = 'block';
-            } else {
-                document.getElementById('providerSelection').style.display = 'none';
-            }
-            document.getElementById('bandwidthStep').style.display = 'block';
-        }
-    </script>
-    <meta name="robots" content="NONE,NOARCHIVE" />
+<meta name="robots" content="NONE,NOARCHIVE" />
+<style>
+  /* Add your custom styles here */
+  .container {
+    display: flex;
+    justify-content: space-between;
+  }
+  .vitals-container {
+    width: 300px; /* Adjust width as needed */
+    background: #f0f0f0; /* Light background color for the vitals section */
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3); /* Optional shadow */
+    display: none; /* Initially hidden */
+  }
+  .video-container {
+    flex: 1;
+    background: #000; /* Set a background for the video container */
+    padding: 10px;
+  }
+  iframe {
+    border: none;
+    width: 100%;
+    height: 100%;
+  }
+</style>
 </head>
 
 <body class="home">
+
 <!-- Container -->
 <div id="container" class="site">
     <!-- Header -->
     <header id="header" class="branding" role="banner">
-        <!-- Optional: Insert your logo here -->
+        
+       <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
+       <!-- <h1>Connect</h1> -->
+        
     </header>
     <!-- END Header -->
 
     <!-- Content -->
-    <div id="maincontent" class="main site join center-content">
-        <!-- Initial Step -->
-        <div id="initialStep">
-            <button type="button" onclick="startMedicalConsultation()" class="webrtcbutton">Generate a Medical Consultation</button>
+  <div id="selectrole" class="main site join hidden">
+    <h2>Select your role for this conference:</h2>
+    <form>
+        <div class="cf">
+            <input type="radio" value="1" name="role" id="id_guest" class="webrtcinput" checked>
+            <label for="id_guest">Guest</label>
+        </div>
+        <div class="cf">
+            <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
+            <label for="id_host">Host</label>
         </div>
 
-        <!-- Provider/Patient Step -->
-        <div id="providerPatientStep" style="display:none;">
-            <p>Are you a provider or a patient?</p>
-            <div class="radio-group">
-                <input type="radio" id="provider" name="role" value="provider" onclick="showProviderOptions()">
-                <label for="provider">Provider</label>
-                <input type="radio" id="patient" name="role" value="patient" onclick="showProviderOptions()">
-                <label for="patient">Patient</label>
-            </div>
-        </div>
+        <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
+    </form>
+  </div>
 
-        <!-- Provider Selection Step -->
-        <div id="providerSelection" style="display:none;">
-            <label for="id_provider" class="vh">Select Provider</label>
-            <select name="name" id="id_provider" class="webrtcinput" required>
-                <option value="" disabled selected>Select a provider</option> <!-- Default prompt -->
-                <option value="MDemo">MDemo</option>
-                <option value="CDemo">CDemo</option>
-                <option value="JDemo">JDemo</option>
-            </select>
-        </div>
+  <div id="pinentry" class="main site join hidden">
+    <form onSubmit="return submitPinEntry();">
+        <label for="id_pin" class="vh">Enter the conference PIN</label>
+        <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
 
-        <!-- Bandwidth Step -->
-        <div id="bandwidthStep" style="display:none;">
-            <form id="id_form" action="conference.html" method="get">
-                <label for="id_alias" class="vh">Conference Alias</label>
-                <input type="text" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput" readonly>
+        <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
+    </form>
+  </div>
 
-                <label for="id_bandwidth" class="vh">Select Bandwidth</label>
-                <select name="bandwidth" id="id_bandwidth" class="webrtcinput">
-                    <option value="1920">Maximum Bandwidth (1920kbps)</option>
-                    <option value="1280" selected>High Bandwidth (1280kbps)</option>
-                    <option value="576">Medium Bandwidth (576kbps)</option>
-                    <option value="192">Low Bandwidth (192kbps)</option>
-                </select>
+  <div id="ivrentry" class="main site join hidden">
+    <form onSubmit="return submitIVREntry();">
+        <label for="id_room" class="vh">Enter the target extension</label>
+        <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
 
-                <div class="button-container">
-                    <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
-                    <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
-                </div>
-            </form>
-        </div>
-    </div>
+        <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
+    </form>
+  </div>
+
+  <div id="maincontent" class="main cf hidden">
+    <section class="top container">
+      <aside id="vitals-container" class="vitals-container">
+        <iframe src="vitals.html" title="Vitals"></iframe>
+      </aside>
+      <div id="videocontainer" class="video-container">
+        <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
+      </div>
+    </section>
+
+    <footer id="controls" class="controls cf">
+      <ul>
+        <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+        <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
+        <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+        <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
+        <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
+        <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
+        <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
+      </ul>
+    </footer>
+  </div>
+
     <!-- END Content -->
 
-    <div id="footer"></div>
+    <div id="footer"> </div>
 </div>
 <!-- END Container -->
 
