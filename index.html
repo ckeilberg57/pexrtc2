@@ -75,6 +75,12 @@
             // Show the form fields and buttons
             document.getElementById('id_form').style.display = 'block';
         });
+
+        // Populate the name field when a provider is selected
+        document.getElementById('provider-select').addEventListener('change', function() {
+            var nameField = document.getElementById('id_name');
+            nameField.value = this.value;
+        });
     }
     </script>
     <meta name="robots" content="NONE,NOARCHIVE" />
@@ -136,6 +142,14 @@
         <form id="id_form" action="conference.html" method="get">
             <label for="id_alias" class="vh">Enter the conference alias</label>
             <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput">
+
+            <label for="provider-select" class="vh">Select a provider</label>
+            <select id="provider-select" class="webrtcinput">
+                <option value="">Select a provider</option>
+                <option value="Dr. JDemo">Dr. JDemo</option>
+                <option value="Dr. MDemo">Dr. MDemo</option>
+                <option value="Dr. CDemo">Dr. CDemo</option>
+            </select>
 
             <label for="id_name" class="vh">Enter your name</label>
             <input type="text" value="" name="name" id="id_name" placeholder="Enter your name" required class="webrtcinput">
