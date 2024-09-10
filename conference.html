@@ -36,8 +36,17 @@
             if (videoElement.srcObject && videoElement.srcObject.active) {
                 clearInterval(interval);
                 document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
+                populateVitals();
             }
         }, 500); // Check every 500ms
+    }
+
+    function populateVitals() {
+        document.getElementById("bp").innerText = "120/80 mmHg";
+        document.getElementById("spO2").innerText = "98%";
+        document.getElementById("temp").innerText = "98.6°F";
+        document.getElementById("height").innerText = "70 in";
+        document.getElementById("weight").innerText = "150 lbs";
     }
     </script>
 
@@ -50,10 +59,19 @@
         top: 0;
         width: 300px; /* Adjust width as needed */
         height: 100%; /* Full height */
-        background: #f0f0f0;
-        border-right: 2px solid #ccc;
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border-right: 2px solid #0eb3c7; /* Match border color */
         padding: 10px;
         box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+
+    #vitals-container h2 {
+        color: #0eb3c7; /* Heading color */
+    }
+
+    #vitals-container p {
+        margin: 10px 0;
     }
     </style>
 </head>
