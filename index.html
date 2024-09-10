@@ -68,14 +68,36 @@
         // Add event listener for the generate button
         document.getElementById('generate-button').addEventListener('click', function() {
             const alias = generateAlias();
-            document.getElementById('alias-display').innerText = alias;
+            document.getElementById('id_alias').value = alias; // Populate the alias in the conference alias input field
+            document.getElementById('alias-display').innerText = alias; // Display the alias
         });
     }
     </script>
     <meta name="robots" content="NONE,NOARCHIVE" />
+    <style>
+        /* Basic styling to ensure the generate button is at the top */
+        #generate-button-container {
+            margin: 20px;
+        }
+
+        #generate-button {
+            margin-bottom: 20px;
+        }
+
+        #alias-display {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body class="home">
+
+<!-- Generate Alias Button -->
+<div id="generate-button-container">
+    <button id="generate-button">Generate Medical Consultation Alias</button>
+    <div id="alias-display"></div>
+</div>
 
 <!-- Container -->
 <div id="container" class="site">
@@ -106,10 +128,6 @@
             <input type="submit" value="Present Screen Only" name="join_pres" id="id_join_pres" class="webrtcbutton">
             <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
         </form>
-
-        <!-- Generate Alias Button -->
-        <button id="generate-button">Generate Medical Consultation Alias</button>
-        <div id="alias-display" style="margin-top: 10px; font-weight: bold;"></div>
     </div>
     <!-- END Content -->
 
