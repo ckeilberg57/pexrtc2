@@ -52,7 +52,7 @@
     }
 
     function populateLastMeasurements() {
-        document.getElementById("ekg-img").src = "img/EKGSample.png"; // Update with actual path
+        document.getElementById("ekg-img").src = "path/to/sample-ekg.png"; // Update with actual path
         document.getElementById("ekg").innerText = "Normal";
         document.getElementById("spO2-sample").innerText = "99%";
         document.getElementById("weight-last").innerText = "155 lbs";
@@ -111,9 +111,10 @@
     }
 
     #last-measurements-container img {
-        width: 100%;
-        height: auto;
-        margin-top: 10px;
+        width: 5in; /* Set width to 5 inches */
+        height: 1.5in; /* Set height to 1.5 inches */
+        object-fit: contain; /* Ensure image fits within specified dimensions without distortion */
+        margin-top: 10px; /* Space above the image */
     }
 
     .button {
@@ -160,7 +161,7 @@
     <div id="last-measurements-container">
         <h2>Last Measurements</h2>
         <p>Sample EKG:</p>
-        <img id="ekg-img" src="path/to/sample-ekg.png" alt="Sample EKG" /> <!-- Placeholder for EKG image -->
+        <img id="ekg-img" src="path/to/sample-ekg.png" alt="Sample EKG" />
         <p>Sample EKG Status: <span id="ekg">N/A</span></p>
         <p>Sample SpO2: <span id="spO2-sample">N/A</span></p>
         <p>Last Weight: <span id="weight-last">N/A</span></p>
@@ -178,22 +179,6 @@
                 <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
                 <label for="id_host">Host</label>
             </div>
-            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
-        </form>
-    </div>
-
-    <div id="pinentry" class="main site join hidden">
-        <form onSubmit="return submitPinEntry();">
-            <label for="id_pin" class="vh">Enter the conference PIN</label>
-            <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
-            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
-        </form>
-    </div>
-
-    <div id="ivrentry" class="main site join hidden">
-        <form onSubmit="return submitIVREntry();">
-            <label for="id_room" class="vh">Enter the target extension</label>
-            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
             <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
         </form>
     </div>
