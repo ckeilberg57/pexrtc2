@@ -7,55 +7,6 @@
     <meta name="robots" content="noindex, nofollow" />
     <script type='text/javascript'>
     window.onload = function() {
-        var chrome_ver = 0;
-        var firefox_ver = 0;
-        var edge_ver = 0;
-        var safari_ver = 0;
-
-        if (navigator.userAgent.indexOf("Chrome") != -1) {
-            chrome_ver = parseInt(window.navigator.appVersion.match(/Chrome\/(\d+)\./)[1], 10);
-        }
-
-        if (navigator.userAgent.indexOf("Firefox") != -1) {
-            firefox_ver = parseInt(window.navigator.userAgent.match(/Firefox\/(\d+)\./)[1], 10);
-        }
-
-        if (navigator.userAgent.indexOf("Edge") != -1) {
-            edge_ver = parseInt(window.navigator.userAgent.match(/Edge\/\d+\.(\d+)/)[1], 10);
-            chrome_ver = 0;
-        }
-
-        if (self.chrome_ver == 0 && navigator.userAgent.indexOf("Safari") != -1) {
-            safari_ver = parseInt(window.navigator.appVersion.match(/Safari\/(\d+)\./)[1], 10);
-        }
-
-        var is_explorer = navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1;
-
-        var id_form = document.getElementById('id_form');
-        if (is_explorer || (safari_ver > 0 && safari_ver < 604)) {
-            id_form.action = "conference-flash.html";
-        }   
-
-        var id_join_pres = document.getElementById('id_join_pres');
-        if (!(chrome_ver > 38 || firefox_ver > 51)) {
-            id_join_pres.hidden = true;
-        }
-
-        var bw;
-        if (navigator.userAgent.indexOf("Mobile") == -1) {
-            bw = "1280";
-        } else {
-            bw = "192";
-        }
-
-        var id_bandwidth = document.getElementById('id_bandwidth');
-        for (var i = 0; i < id_bandwidth.children.length; i++) {
-            if (id_bandwidth.children[i].value == bw) {
-                id_bandwidth.children[i].selected = true;
-            }
-        }
-
-        // Function to generate alias
         function generateAlias() {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let alias = 'ph';
@@ -76,17 +27,28 @@
             document.getElementById('id_form').style.display = 'block';
         });
 
-        // Update the name field based on user selection
+        // Update form fields based on user selection
         document.getElementById('role-select').addEventListener('change', function() {
+            var role = this.value;
             var nameField = document.getElementById('id_name');
-            if (this.value === 'provider') {
-                document.getElementById('provider-select').style.display = 'block';
-                document.getElementById('provider-select').addEventListener('change', function() {
-                    nameField.value = this.value;
+            var providerSelect = document.getElementById('provider-select');
+            var providerDisplay = document.getElementById('provider-display');
+
+            if (role === 'provider') {
+                providerSelect.style.display = 'block';
+                nameField.style.display = 'none';
+                providerSelect.addEventListener('change', function() {
+                    providerDisplay.innerText = this.value;
+                    providerSelect.style.display = 'none'; // Hide provider select after selection
                 });
+            } else if (role === 'patient') {
+                providerSelect.style.display = 'none';
+                providerDisplay.innerText = '';
+                nameField.style.display = 'block';
             } else {
-                document.getElementById('provider-select').style.display = 'none';
-                nameField.value = '';
+                providerSelect.style.display = 'none';
+                providerDisplay.innerText = '';
+                nameField.style.display = 'none';
             }
         });
     }
@@ -126,8 +88,12 @@
             display: none;
         }
 
-        /* Hide provider select by default */
+        /* Hide provider select and name field initially */
         #provider-select {
+            display: none;
+        }
+
+        #id_name {
             display: none;
         }
     </style>
@@ -170,6 +136,7 @@
                 <option value="Dr. MDemo">Dr. MDemo</option>
                 <option value="Dr. CDemo">Dr. CDemo</option>
             </select>
+            <div id="provider-display" class="vh"></div>
 
             <label for="id_name" class="vh">Enter your name</label>
             <input type="text" value="" name="name" id="id_name" placeholder="Enter your name" required class="webrtcinput">
