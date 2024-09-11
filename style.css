@@ -533,6 +533,7 @@ select::-ms-expand {
   margin-bottom: 30px;
   font-weight: 600;
   font-size: 1.4em;
+  color: #fff;
 }
 .site.join form div {
   width: 100%;
