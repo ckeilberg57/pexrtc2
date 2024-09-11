@@ -134,6 +134,7 @@ body {
   max-width: 1200px;
 }
 .main {
+  margin-left: 2in;
   width: 100%;
   display: block;
 }
