@@ -43,29 +43,18 @@
         }, 500); // Check every 500ms
     }
 
-    function populateVitals() {
-        document.getElementById("bp").innerText = "120/80 mmHg";
-        document.getElementById("spO2").innerText = "98%";
-        document.getElementById("temp").innerText = "98.6°F";
-        document.getElementById("height").innerText = "70 in";
-        document.getElementById("weight").innerText = "150 lbs";
-    }
+        // Function to populate the Vitals Dashboard with the image
+        function populateVitals() {
+            // Set the GIF as the source for the vitals image
+            document.getElementById("vitals-image").src = "img/vitals.gif";
+        }
+        
+        // Function to update the Vitals Dashboard image (if needed)
+        function updateVitals() {
+            // Update the image (or any other details if necessary)
+            document.getElementById("vitals-image").src = "img/vitals.gif"; // Same GIF or a new one if needed
+        }
 
-    function populateLastMeasurements() {
-        document.getElementById("ekg-img").src = "img/vitals.gif"; // Update with actual path
-        document.getElementById("ekg").innerText = "Normal";
-        document.getElementById("spO2-sample").innerText = "99%";
-        document.getElementById("weight-last").innerText = "155 lbs";
-        document.getElementById("height-last").innerText = "71 in";
-    }
-
-    function updateVitals() {
-        document.getElementById("bp").innerText = "130/85 mmHg";
-        document.getElementById("spO2").innerText = "97%";
-        document.getElementById("temp").innerText = "99.1°F";
-        document.getElementById("height").innerText = "71 in";
-        document.getElementById("weight").innerText = "155 lbs";
-    }
     </script>
 
     <meta name="robots" content="NONE,NOARCHIVE" />
@@ -145,10 +134,10 @@
     </header>
     <!-- END Header -->
 
-    <!-- Content -->
     <div id="vitals-container">
-        <h2>Current Vitals</h2>
-        <img id="ekg-img" src="path/to/sample-ekg.png" alt="Sample EKG" />
+        <h2>Vitals Dashboard</h2>
+        <!-- Image to display the GIF -->
+        <img id="vitals-image" src="img/vitals.gif" alt="Vitals Dashboard" />
         <button class="button" onclick="updateVitals()">Take New Measurement</button>
     </div>
 
