@@ -1,62 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
     <title>Pexip Health</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <meta name="robots" content="noindex, nofollow" />
-    <script type='text/javascript'>
-    window.onload = function() {
-        function generateAlias() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let alias = 'ph';
-            for (let i = 0; i < 15; i++) {
-                alias += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return alias;
-        }
-
-        // Add event listener for the generate button
-        document.getElementById('generate-button').addEventListener('click', function() {
-            const alias = generateAlias();
-            document.getElementById('id_alias').value = alias; // Populate the alias in the conference alias input field
-            document.getElementById('alias-display').innerText = alias; // Display the alias
-            document.getElementById('generate-button-container').style.display = 'none'; // Hide the button
-
-            // Show the form fields and buttons
-            document.getElementById('id_form').style.display = 'block';
-        });
-
-        // Update form fields based on user selection
-        document.getElementById('role-select').addEventListener('change', function() {
-            var role = this.value;
-            var nameField = document.getElementById('id_name');
-            var providerSelect = document.getElementById('provider-select');
-            var providerDisplay = document.getElementById('provider-display');
-
-            if (role === 'provider') {
-                providerSelect.style.display = 'block';
-                nameField.style.display = 'none';
-                providerSelect.addEventListener('change', function() {
-                    var providerName = this.value;
-                    providerDisplay.innerText = providerName;
-                    nameField.value = providerName; // Populate name field with selected provider
-                    providerSelect.style.display = 'none'; // Hide provider select after selection
-                });
-            } else if (role === 'patient') {
-                providerSelect.style.display = 'none';
-                providerDisplay.innerText = '';
-                nameField.style.display = 'block';
-                nameField.value = ''; // Clear the name field
-            } else {
-                providerSelect.style.display = 'none';
-                providerDisplay.innerText = '';
-                nameField.style.display = 'none';
-                nameField.value = ''; // Clear the name field if no role is selected
-            }
-        });
-    }
-    </script>
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
         /* Center the generate button */
@@ -100,6 +47,12 @@
         #id_name {
             display: none;
         }
+
+        /* Style for the EKG image */
+        #ekg-image {
+            width: 5in; /* Set the width to 5 inches */
+            height: 0.5in; /* Set the height to 1/2 inch */
+        }
     </style>
 </head>
 
@@ -119,6 +72,11 @@
         <!-- <h1>Connect</h1> -->
     </header>
     <!-- END Header -->
+
+    <!-- EKG Image -->
+    <div>
+        <img src="img/ekg.png" alt="EKG Image" id="ekg-image" />
+    </div>
 
     <!-- Content -->
     <div id="maincontent" class="main site join">
