@@ -35,10 +35,10 @@
         var interval = setInterval(function() {
             if (videoElement.srcObject && videoElement.srcObject.active) {
                 clearInterval(interval);
-                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
-                populateLastMeasurements(); // Populate last measurements
                 document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
                 populateVitals();
+                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
+                populateLastMeasurements(); // Populate last measurements
             }
         }, 500); // Check every 500ms
     }
@@ -94,7 +94,7 @@
 
     #last-measurements-container {
         display: none; /* Hide initially */
-        margin-top: 20px; /* Space between last measurements and vitals */
+        margin-top: 20px; /* Space between vitals and last measurements */
         padding: 10px;
         background: #0a2136; /* Match background color */
         color: white; /* Text color */
@@ -146,17 +146,6 @@
     <!-- END Header -->
 
     <!-- Content -->
-    <!-- Moved the vitals-container section to the last-measurements-container -->
-    <div id="last-measurements-container">
-        <h2>Last Measurements</h2>
-        <p>Sample EKG:</p>
-        <img id="ekg-img" src="path/to/sample-ekg.png" alt="Sample EKG" /> <!-- Placeholder for EKG image -->
-        <p>Sample EKG Status: <span id="ekg">N/A</span></p>
-        <p>Sample SpO2: <span id="spO2-sample">N/A</span></p>
-        <p>Last Weight: <span id="weight-last">N/A</span></p>
-        <p>Last Height: <span id="height-last">N/A</span></p>
-    </div>
-
     <div id="vitals-container">
         <h2>Vitals Dashboard</h2>
         <p>Blood Pressure: <span id="bp">N/A</span></p>
@@ -165,6 +154,17 @@
         <p>Height (in): <span id="height">N/A</span></p>
         <p>Weight (lbs): <span id="weight">N/A</span></p>
         <button class="button" onclick="updateVitals()">Take New Measurement</button>
+    </div>
+
+    <!-- New Section for Last Measurements -->
+    <div id="last-measurements-container">
+        <h2>Last Measurements</h2>
+        <p>Sample EKG:</p>
+        <img id="ekg-img" src="path/to/sample-ekg.png" alt="Sample EKG" /> <!-- Placeholder for EKG image -->
+        <p>Sample EKG Status: <span id="ekg">N/A</span></p>
+        <p>Sample SpO2: <span id="spO2-sample">N/A</span></p>
+        <p>Last Weight: <span id="weight-last">N/A</span></p>
+        <p>Last Height: <span id="height-last">N/A</span></p>
     </div>
 
     <div id="selectrole" class="main site join hidden">
@@ -198,17 +198,39 @@
         </form>
     </div>
 
-    <div id="status">
-        <h2>Status</h2>
-        <div id="status-info"></div>
-    </div>
+    <div id="maincontent" class="main cf hidden">
+        <section class="top">
+            <aside class="participants">
+                <h2 id="rosterheading">Participants</h2>
+                <div id="rosterlist" class="rosterlist">
+                    <ul id="rosterul"></ul>
+                </div>
+                <div id="selfview" class="selfview" hidden>
+                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
+                </div>
+            </aside>
+            <div id="videocontainer" class="videocontainer">
+                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
+            </div>
+        </section>
 
-    <!-- Footer -->
-    <footer id="footer">
-        <!-- <p>&copy; 2024 Company Name</p> -->
-    </footer>
-    <!-- END Footer -->
+        <footer id="controls" class="controls cf">
+            <ul>
+                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+                <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
+                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+                <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
+                <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
+                <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
+                <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
+            </ul>
+        </footer>
+    </div>
+    <!-- END Content -->
+
+    <div id="footer"> </div>
 </div>
 <!-- END Container -->
+
 </body>
 </html>
