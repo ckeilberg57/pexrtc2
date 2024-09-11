@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
@@ -52,7 +53,7 @@
     }
 
     function populateLastMeasurements() {
-        document.getElementById("ekg-img").src = "img/vitals.gif"; // Updated with vitals.gif
+        document.getElementById("ekg-img").src = "img/ekgSample.gif"; // Update with actual path
         document.getElementById("ekg").innerText = "Normal";
         document.getElementById("spO2-sample").innerText = "99%";
         document.getElementById("weight-last").innerText = "155 lbs";
@@ -160,7 +161,7 @@
     <div id="last-measurements-container">
         <h2>Last Measurements</h2>
         <p>Sample EKG:</p>
-        <img id="ekg-img" src="img/vitals.gif" alt="Sample EKG" /> <!-- Updated with vitals.gif -->
+        <img id="ekg-img" src="path/to/sample-ekg.png" alt="Sample EKG" /> <!-- Placeholder for EKG image -->
         <p>Sample EKG Status: <span id="ekg">N/A</span></p>
         <p>Sample SpO2: <span id="spO2-sample">N/A</span></p>
         <p>Last Weight: <span id="weight-last">N/A</span></p>
@@ -198,36 +199,39 @@
         </form>
     </div>
 
-    <div id="conference" class="main site">
-        <div id="video-container">
-            <video id="video" autoplay></video>
-        </div>
+    <div id="maincontent" class="main cf hidden">
+        <section class="top">
+            <aside class="participants">
+                <h2 id="rosterheading">Participants</h2>
+                <div id="rosterlist" class="rosterlist">
+                    <ul id="rosterul"></ul>
+                </div>
+                <div id="selfview" class="selfview" hidden>
+                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
+                </div>
+            </aside>
+            <div id="videocontainer" class="videocontainer">
+                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
+            </div>
+        </section>
+
+        <footer id="controls" class="controls cf">
+            <ul>
+                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+                <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
+                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+                <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
+                <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
+                <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
+                <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
+            </ul>
+        </footer>
     </div>
+    <!-- END Content -->
+
+    <div id="footer"> </div>
 </div>
-<!-- End Container -->
-
-<script type="text/javascript">
-    function submitSelectRole() {
-        var selectedRole = document.querySelector('input[name="role"]:checked').value;
-        var conferenceURL = "https://cklab-edges.ck-collab-engtest.com/webapp3/m/?role=" + selectedRole;
-        window.location.href = conferenceURL;
-        return false;
-    }
-
-    function submitPinEntry() {
-        var pin = document.getElementById('id_pin').value;
-        var conferenceURL = "https://cklab-edges.ck-collab-engtest.com/webapp3/m/?pin=" + pin;
-        window.location.href = conferenceURL;
-        return false;
-    }
-
-    function submitIVREntry() {
-        var room = document.getElementById('id_room').value;
-        var conferenceURL = "https://cklab-edges.ck-collab-engtest.com/webapp3/m/?room=" + room;
-        window.location.href = conferenceURL;
-        return false;
-    }
-</script>
+<!-- END Container -->
 
 </body>
 </html>
