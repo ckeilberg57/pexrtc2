@@ -1,141 +1,116 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
     <title>Pexip Health</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <meta name="robots" content="noindex, nofollow" />
-    <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
-    <script type="text/javascript" src="webui.js"></script>
     <script type='text/javascript'>
     window.onload = function() {
-        var url = window.location.href;
-        var params = url.substr(url.indexOf("?")+1).split("&");
-        var i;
-        var qp = {};
-        for (i=0;i<params.length;i++) {
-            var kv = params[i].split("=");
-            qp[kv[0]] = kv[1];
-        }
-        console.log(qp);
-
-        var source = "";
-        if ("join_pres" in qp) {
-            source = "screen";
-        }
-
-        // Initialize with the provided parameters
-        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
-
-        // Check if the video stream is active
-        checkVideoStream();
-    }
-
-    function checkVideoStream() {
-        var videoElement = document.getElementById("video");
-        var interval = setInterval(function() {
-            if (videoElement.srcObject && videoElement.srcObject.active) {
-                clearInterval(interval);
-                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
-                populateVitals();
-                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
-                populateLastMeasurements(); // Populate last measurements
+        function generateAlias() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let alias = 'ph';
+            for (let i = 0; i < 15; i++) {
+                alias += characters.charAt(Math.floor(Math.random() * characters.length));
             }
-        }, 500); // Check every 500ms
-    }
+            return alias;
+        }
 
-    function populateVitals() {
-        document.getElementById("bp").innerText = "120/80 mmHg";
-        document.getElementById("spO2").innerText = "98%";
-        document.getElementById("temp").innerText = "98.6°F";
-        document.getElementById("height").innerText = "70 in";
-        document.getElementById("weight").innerText = "150 lbs";
-    }
+        // Add event listener for the generate button
+        document.getElementById('generate-button').addEventListener('click', function() {
+            const alias = generateAlias();
+            document.getElementById('id_alias').value = alias; // Populate the alias in the conference alias input field
+            document.getElementById('alias-display').innerText = alias; // Display the alias
+            document.getElementById('generate-button-container').style.display = 'none'; // Hide the button
 
-    function populateLastMeasurements() {
-        document.getElementById("ekg-img").src = "img/ekgSample.gif"; // Update with actual path
-        document.getElementById("ekg").innerText = "Normal";
-        document.getElementById("spO2-sample").innerText = "99%";
-        document.getElementById("weight-last").innerText = "155 lbs";
-        document.getElementById("height-last").innerText = "71 in";
-    }
+            // Show the form fields and buttons
+            document.getElementById('id_form').style.display = 'block';
+        });
 
-    function updateVitals() {
-        document.getElementById("bp").innerText = "130/85 mmHg";
-        document.getElementById("spO2").innerText = "97%";
-        document.getElementById("temp").innerText = "99.1°F";
-        document.getElementById("height").innerText = "71 in";
-        document.getElementById("weight").innerText = "155 lbs";
+        // Update form fields based on user selection
+        document.getElementById('role-select').addEventListener('change', function() {
+            var role = this.value;
+            var nameField = document.getElementById('id_name');
+            var providerSelect = document.getElementById('provider-select');
+            var providerDisplay = document.getElementById('provider-display');
+
+            if (role === 'provider') {
+                providerSelect.style.display = 'block';
+                nameField.style.display = 'none';
+                providerSelect.addEventListener('change', function() {
+                    var providerName = this.value;
+                    providerDisplay.innerText = providerName;
+                    nameField.value = providerName; // Populate name field with selected provider
+                    providerSelect.style.display = 'none'; // Hide provider select after selection
+                });
+            } else if (role === 'patient') {
+                providerSelect.style.display = 'none';
+                providerDisplay.innerText = '';
+                nameField.style.display = 'block';
+                nameField.value = ''; // Clear the name field
+            } else {
+                providerSelect.style.display = 'none';
+                providerDisplay.innerText = '';
+                nameField.style.display = 'none';
+                nameField.value = ''; // Clear the name field if no role is selected
+            }
+        });
     }
     </script>
-
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
-    #vitals-container {
-        display: none; /* Hide initially */
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 300px; /* Adjust width as needed */
-        height: 100%; /* Full height */
-        background: #0a2136; /* Match background color */
-        color: white; /* Text color */
-        border-right: 2px solid #0eb3c7; /* Match border color */
-        padding: 10px;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    }
+        /* Center the generate button */
+        #generate-button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
 
-    #vitals-container h2 {
-        color: #0eb3c7; /* Heading color */
-    }
+        #generate-button {
+            display: inline-block;
+            background-color: #0ebec7; /* Match button color */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
 
-    #vitals-container p {
-        margin: 10px 0;
-    }
+        #generate-button:hover {
+            background-color: #0a9a9b; /* Darker shade on hover */
+        }
 
-    #last-measurements-container {
-        display: none; /* Hide initially */
-        margin-top: 20px; /* Space between vitals and last measurements */
-        padding: 10px;
-        background: #0a2136; /* Match background color */
-        color: white; /* Text color */
-        border: 1px solid #0eb3c7; /* Border color */
-        border-radius: 5px; /* Rounded corners */
-    }
+        #alias-display {
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 10px;
+        }
 
-    #last-measurements-container h2 {
-        color: #0eb3c7; /* Heading color */
-    }
+        /* Hide form fields and buttons initially */
+        #id_form {
+            display: none;
+        }
 
-    #last-measurements-container p {
-        margin: 10px 0;
-    }
+        /* Hide provider select and name field initially */
+        #provider-select {
+            display: none;
+        }
 
-    #last-measurements-container img {
-        width: 100%;
-        height: auto;
-        margin-top: 10px;
-    }
-
-    .button {
-        display: inline-block;
-        background-color: #0eb3c7;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 20px;
-        font-size: 16px;
-    }
-
-    .button:hover {
-        background-color: #0a8a9c;
-    }
+        #id_name {
+            display: none;
+        }
     </style>
 </head>
 
 <body class="home">
+
+<!-- Generate Alias Button -->
+<div id="generate-button-container">
+    <button id="generate-button">Generate Medical Consultation Alias</button>
+    <div id="alias-display"></div>
+</div>
+
 <!-- Container -->
 <div id="container" class="site">
     <!-- Header -->
@@ -146,85 +121,41 @@
     <!-- END Header -->
 
     <!-- Content -->
-    <div id="vitals-container">
-        <h2>Vitals Dashboard</h2>
-        <p>Blood Pressure: <span id="bp">N/A</span></p>
-        <p>SpO2 Level: <span id="spO2">N/A</span></p>
-        <p>Temperature (F): <span id="temp">N/A</span></p>
-        <p>Height (in): <span id="height">N/A</span></p>
-        <p>Weight (lbs): <span id="weight">N/A</span></p>
-        <button class="button" onclick="updateVitals()">Take New Measurement</button>
-    </div>
+    <div id="maincontent" class="main site join">
+        <form id="id_form" action="conference.html" method="get">
+            <label for="id_alias" class="vh">Enter the conference alias</label>
+            <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput">
 
-    <!-- New Section for Last Measurements -->
-    <div id="last-measurements-container">
-        <h2>Last Measurements</h2>
-        <p>Sample EKG:</p>
-        <img id="ekg-img" src="path/to/sample-ekg.png" alt="Sample EKG" /> <!-- Placeholder for EKG image -->
-        <p>Sample EKG Status: <span id="ekg">N/A</span></p>
-        <p>Sample SpO2: <span id="spO2-sample">N/A</span></p>
-        <p>Last Weight: <span id="weight-last">N/A</span></p>
-        <p>Last Height: <span id="height-last">N/A</span></p>
-    </div>
+            <label for="role-select" class="vh">You are a</label>
+            <select id="role-select" class="webrtcinput">
+                <option value="">Select role</option>
+                <option value="provider">Provider</option>
+                <option value="patient">Patient</option>
+            </select>
 
-    <div id="selectrole" class="main site join hidden">
-        <h2>Select your role for this conference:</h2>
-        <form>
-            <div class="cf">
-                <input type="radio" value="1" name="role" id="id_guest" class="webrtcinput" checked>
-                <label for="id_guest">Guest</label>
-            </div>
-            <div class="cf">
-                <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
-                <label for="id_host">Host</label>
-            </div>
-            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
+            <label for="provider-select" class="vh" id="provider-label">Select a provider</label>
+            <select id="provider-select" class="webrtcinput">
+                <option value="">Select a provider</option>
+                <option value="Dr. JDemo">Dr. JDemo</option>
+                <option value="Dr. MDemo">Dr. MDemo</option>
+                <option value="Dr. CDemo">Dr. CDemo</option>
+            </select>
+            <div id="provider-display" class="vh"></div>
+
+            <label for="id_name" class="vh">Enter your name</label>
+            <input type="text" value="" name="name" id="id_name" placeholder="Enter your name" required class="webrtcinput">
+
+            <select name="bandwidth" class="webrtcinput" id="id_bandwidth">
+                <option value="1920">Maximum Bandwidth (1920kbps)</option>
+                <option value="1280" selected>High Bandwidth (1280kbps)</option>
+                <option value="576">Medium Bandwidth (576kbps)</option>
+                <option value="192">Low Bandwidth (192kbps)</option>
+            </select>
+
+            <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
+            <input type="submit" value="Present Screen Only" name="join_pres" id="id_join_pres" class="webrtcbutton">
+            <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
         </form>
-    </div>
-
-    <div id="pinentry" class="main site join hidden">
-        <form onSubmit="return submitPinEntry();">
-            <label for="id_pin" class="vh">Enter the conference PIN</label>
-            <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
-            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
-        </form>
-    </div>
-
-    <div id="ivrentry" class="main site join hidden">
-        <form onSubmit="return submitIVREntry();">
-            <label for="id_room" class="vh">Enter the target extension</label>
-            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
-            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
-        </form>
-    </div>
-
-    <div id="maincontent" class="main cf hidden">
-        <section class="top">
-            <aside class="participants">
-                <h2 id="rosterheading">Participants</h2>
-                <div id="rosterlist" class="rosterlist">
-                    <ul id="rosterul"></ul>
-                </div>
-                <div id="selfview" class="selfview" hidden>
-                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
-                </div>
-            </aside>
-            <div id="videocontainer" class="videocontainer">
-                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
-            </div>
-        </section>
-
-        <footer id="controls" class="controls cf">
-            <ul>
-                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
-                <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
-                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
-                <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
-                <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
-                <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
-                <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
-            </ul>
-        </footer>
     </div>
     <!-- END Content -->
 
