@@ -35,26 +35,66 @@
         var interval = setInterval(function() {
             if (videoElement.srcObject && videoElement.srcObject.active) {
                 clearInterval(interval);
+                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
+                populateVitals();
                 document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
                 populateLastMeasurements(); // Populate last measurements
             }
         }, 500); // Check every 500ms
     }
 
+    function populateVitals() {
+        document.getElementById("bp").innerText = "120/80 mmHg";
+        document.getElementById("spO2").innerText = "98%";
+        document.getElementById("temp").innerText = "98.6°F";
+        document.getElementById("height").innerText = "70 in";
+        document.getElementById("weight").innerText = "150 lbs";
+    }
+
     function populateLastMeasurements() {
-        document.getElementById("ekg-img").src = "img/vitals.gif"; // Updated to display the GIF
+        document.getElementById("ekg-img").src = "img/ekgSample.gif"; // Update with actual path
         document.getElementById("ekg").innerText = "Normal";
         document.getElementById("spO2-sample").innerText = "99%";
         document.getElementById("weight-last").innerText = "155 lbs";
         document.getElementById("height-last").innerText = "71 in";
     }
+
+    function updateVitals() {
+        document.getElementById("bp").innerText = "130/85 mmHg";
+        document.getElementById("spO2").innerText = "97%";
+        document.getElementById("temp").innerText = "99.1°F";
+        document.getElementById("height").innerText = "71 in";
+        document.getElementById("weight").innerText = "155 lbs";
+    }
     </script>
 
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
+    #vitals-container {
+        display: none; /* Hide initially */
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 300px; /* Adjust width as needed */
+        height: 100%; /* Full height */
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border-right: 2px solid #0eb3c7; /* Match border color */
+        padding: 10px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+
+    #vitals-container h2 {
+        color: #0eb3c7; /* Heading color */
+    }
+
+    #vitals-container p {
+        margin: 10px 0;
+    }
+
     #last-measurements-container {
         display: none; /* Hide initially */
-        margin-top: 20px; /* Space for positioning */
+        margin-top: 20px; /* Space between vitals and last measurements */
         padding: 10px;
         background: #0a2136; /* Match background color */
         color: white; /* Text color */
@@ -106,17 +146,25 @@
     <!-- END Header -->
 
     <!-- Content -->
-    <!-- Remove the vitals dashboard section -->
-    
+    <div id="vitals-container">
+        <h2>Vitals Dashboard</h2>
+        <p>Blood Pressure: <span id="bp">N/A</span></p>
+        <p>SpO2 Level: <span id="spO2">N/A</span></p>
+        <p>Temperature (F): <span id="temp">N/A</span></p>
+        <p>Height (in): <span id="height">N/A</span></p>
+        <p>Weight (lbs): <span id="weight">N/A</span></p>
+        <button class="button" onclick="updateVitals()">Take New Measurement</button>
+    </div>
+
     <!-- New Section for Last Measurements -->
     <div id="last-measurements-container">
         <h2>Last Measurements</h2>
         <p>Sample EKG:</p>
-        <img id="ekg-img" src="img/vitals.gif" alt="Sample EKG" /> <!-- Updated to display the GIF -->
-        <p>Sample EKG Status: <span id="ekg">Normal</span></p>
-        <p>Sample SpO2: <span id="spO2-sample">99%</span></p>
-        <p>Last Weight: <span id="weight-last">155 lbs</span></p>
-        <p>Last Height: <span id="height-last">71 in</span></p>
+        <img id="ekg-img" src="path/to/sample-ekg.png" alt="Sample EKG" /> <!-- Placeholder for EKG image -->
+        <p>Sample EKG Status: <span id="ekg">N/A</span></p>
+        <p>Sample SpO2: <span id="spO2-sample">N/A</span></p>
+        <p>Last Weight: <span id="weight-last">N/A</span></p>
+        <p>Last Height: <span id="height-last">N/A</span></p>
     </div>
 
     <div id="selectrole" class="main site join hidden">
@@ -174,14 +222,15 @@
                 <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
                 <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
                 <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
-                <li><a id="id_recording" class="webrtcbutton btn-recording inactive" onclick="toggleRecording();">Not Recording</a></li>
-                <li><a id="id_chat" class="webrtcbutton btn-chat" onclick="toggleChat();">Chat</a></li>
-                <li><a id="id_end" class="webrtcbutton btn-end" onclick="endConference();">End Call</a></li>
+                <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
             </ul>
         </footer>
     </div>
     <!-- END Content -->
+
+    <div id="footer"> </div>
 </div>
 <!-- END Container -->
+
 </body>
 </html>
