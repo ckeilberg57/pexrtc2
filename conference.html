@@ -1,35 +1,201 @@
-<!DOCTYPE html>
-<html lang="en">
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Conference</title>
-    <style>
-        /* Make sure this is specific to only the role selection label */
-        #conferenceSelection label {
-            color: white;
+    <title>Pexip Health</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
+    <script type="text/javascript" src="webui.js"></script>
+    <script type='text/javascript'>
+    window.onload = function() {
+        var url = window.location.href;
+        var params = url.substr(url.indexOf("?")+1).split("&");
+        var i;
+        var qp = {};
+        for (i=0;i<params.length;i++) {
+            var kv = params[i].split("=");
+            qp[kv[0]] = kv[1];
         }
+        console.log(qp);
+
+        var source = "";
+        if ("join_pres" in qp) {
+            source = "screen";
+        }
+
+        // Initialize with the provided parameters
+        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+
+        // Check if the video stream is active
+        checkVideoStream();
+    }
+
+    function checkVideoStream() {
+        var videoElement = document.getElementById("video");
+        var interval = setInterval(function() {
+            if (videoElement.srcObject && videoElement.srcObject.active) {
+                clearInterval(interval);
+                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
+                populateVitals();
+                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
+                populateLastMeasurements(); // Populate last measurements
+            }
+        }, 500); // Check every 500ms
+    }
+
+    function populateVitals() {
+        document.getElementById("bp").innerText = "120/80 mmHg";
+        document.getElementById("spO2").innerText = "98%";
+        document.getElementById("temp").innerText = "98.6°F";
+        document.getElementById("height").innerText = "70 in";
+        document.getElementById("weight").innerText = "150 lbs";
+    }
+
+    function populateLastMeasurements() {
+        document.getElementById("ekg-img").src = "img/EKGSample.png"; // Update with actual path
+        document.getElementById("ekg").innerText = "Normal";
+        document.getElementById("spO2-sample").innerText = "99%";
+        document.getElementById("weight-last").innerText = "155 lbs";
+        document.getElementById("height-last").innerText = "71 in";
+    }
+
+    function updateVitals() {
+        document.getElementById("bp").innerText = "130/85 mmHg";
+        document.getElementById("spO2").innerText = "97%";
+        document.getElementById("temp").innerText = "99.1°F";
+        document.getElementById("height").innerText = "71 in";
+        document.getElementById("weight").innerText = "155 lbs";
+    }
+    </script>
+
+    <meta name="robots" content="NONE,NOARCHIVE" />
+    <style>
+    #vitals-container {
+        display: none; /* Hide initially */
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 300px; /* Adjust width as needed */
+        height: 100%; /* Full height */
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border-right: 2px solid #0eb3c7; /* Match border color */
+        padding: 10px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+
+    #vitals-container h2 {
+        color: #0eb3c7; /* Heading color */
+    }
+
+    #vitals-container p {
+        margin: 10px 0;
+    }
+
+    #last-measurements-container {
+        display: none; /* Hide initially */
+        margin-top: 20px; /* Space between vitals and last measurements */
+        padding: 10px;
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border: 1px solid #0eb3c7; /* Border color */
+        border-radius: 5px; /* Rounded corners */
+    }
+
+    #last-measurements-container h2 {
+        color: #0eb3c7; /* Heading color */
+    }
+
+    #last-measurements-container p {
+        margin: 10px 0;
+    }
+
+    #last-measurements-container img {
+        width: 100%;
+        height: auto;
+        margin-top: 10px;
+    }
+
+    .button {
+        display: inline-block;
+        background-color: #0eb3c7;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    .button:hover {
+        background-color: #0a8a9c;
+    }
     </style>
 </head>
-<body>
 
-<div id="container">
-    <!-- BEGIN Header -->
-    <header id="header">
-        <h1>Conference</h1>
+<body class="home">
+<!-- Container -->
+<div id="container" class="site">
+    <!-- Header -->
+    <header id="header" class="branding" role="banner">
+        <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
+        <!-- <h1>Connect</h1> -->
     </header>
     <!-- END Header -->
 
-    <!-- BEGIN Content -->
-    <div id="content">
-        <form id="conferenceSelection" class="conferenceSelection">
-            <label for="roleSelect">Select your role for this conference</label>
-            <select id="roleSelect">
-                <option value="guest">Guest</option>
-                <option value="host">Host</option>
-            </select>
-            <input type="text" id="pinInput" placeholder="Enter PIN" class="hidden">
-            <input type="button" value="Join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
+    <!-- Content -->
+    <div id="vitals-container">
+        <h2>Vitals Dashboard</h2>
+        <p>Blood Pressure: <span id="bp">N/A</span></p>
+        <p>SpO2 Level: <span id="spO2">N/A</span></p>
+        <p>Temperature (F): <span id="temp">N/A</span></p>
+        <p>Height (in): <span id="height">N/A</span></p>
+        <p>Weight (lbs): <span id="weight">N/A</span></p>
+        <button class="button" onclick="updateVitals()">Take New Measurement</button>
+    </div>
+
+    <!-- New Section for Last Measurements -->
+    <div id="last-measurements-container">
+        <h2>Last Measurements</h2>
+        <p>Sample EKG:</p>
+        <img id="ekg-img" src="path/to/sample-ekg.png" alt="Sample EKG" /> <!-- Placeholder for EKG image -->
+        <p>Sample EKG Status: <span id="ekg">N/A</span></p>
+        <p>Sample SpO2: <span id="spO2-sample">N/A</span></p>
+        <p>Last Weight: <span id="weight-last">N/A</span></p>
+        <p>Last Height: <span id="height-last">N/A</span></p>
+    </div>
+
+    <div id="selectrole" class="main site join hidden">
+        <h2>Select your role for this conference:</h2>
+        <form>
+            <div class="cf">
+                <input type="radio" value="1" name="role" id="id_guest" class="webrtcinput" checked>
+                <label for="id_guest">Guest</label>
+            </div>
+            <div class="cf">
+                <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
+                <label for="id_host">Host</label>
+            </div>
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
+        </form>
+    </div>
+
+    <div id="pinentry" class="main site join hidden">
+        <form onSubmit="return submitPinEntry();">
+            <label for="id_pin" class="vh">Enter the conference PIN</label>
+            <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
+        </form>
+    </div>
+
+    <div id="ivrentry" class="main site join hidden">
+        <form onSubmit="return submitIVREntry();">
+            <label for="id_room" class="vh">Enter the target extension</label>
+            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
         </form>
     </div>
 
