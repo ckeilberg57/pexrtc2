@@ -23,74 +23,58 @@
             source = "screen";
         }
 
-        // Show role selection form initially
-        document.getElementById("selectrole").style.display = "block";
+        // Initialize with the provided parameters
+        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+
+        // Check if the video stream is active
+        checkVideoStream();
+    }
+
+    function checkVideoStream() {
+        var videoElement = document.getElementById("video");
+        var interval = setInterval(function() {
+            if (videoElement.srcObject && videoElement.srcObject.active) {
+                clearInterval(interval);
+                document.getElementById("iframe-container").style.display = "block"; // Show the iframe
+            }
+        }, 500); // Check every 500ms
     }
 
     function submitSelectRole() {
-        // Hide role selection and show PIN entry if Host role is selected
         var role = document.querySelector('input[name="role"]:checked').value;
-        if (role == "2") { // Host
-            document.getElementById("selectrole").style.display = "none";
+        if (role === "2") { // Host
             document.getElementById("pinentry").style.display = "block";
-        } else { // Guest
             document.getElementById("selectrole").style.display = "none";
+        } else {
             startConference();
         }
     }
 
     function submitPinEntry() {
         var pin = document.getElementById("id_pin").value;
-        if (pin) {
-            document.getElementById("pinentry").style.display = "none";
-            startConference();
-        }
+        // Validate the PIN if needed and then start the conference
+        startConference();
         return false; // Prevent form submission
     }
 
     function startConference() {
-        var url = window.location.href;
-        var params = url.substr(url.indexOf("?")+1).split("&");
-        var i;
-        var qp = {};
-        for (i=0;i<params.length;i++) {
-            var kv = params[i].split("=");
-            qp[kv[0]] = kv[1];
-        }
-        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", "");
-
-        // Display iframe after conference starts
-        document.getElementById("maincontent").style.display = "block";
-        document.getElementById("iframe-container").style.display = "block";
+        // Add any additional conference start logic here if needed
+        document.getElementById("iframe-container").style.display = "block"; // Show the iframe
     }
     </script>
+
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
-    #vitals-container {
-        display: none; /* Hide initially */
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 5.5in; /* Set width */
-        height: 100%; /* Full height */
-        background: #0a2136; /* Match background color */
-        color: white; /* Text color */
-        border-right: 2px solid #0eb3c7; /* Border color */
-        padding: 10px;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        overflow: hidden; /* Ensure no overflow */
-    }
-    
     #iframe-container {
         display: none; /* Hide initially */
         width: 100%;
         height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        background: #0a2136;
-        color: white;
-        border-right: 2px solid #0eb3c7; /* Border color */
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border: 1px solid #0eb3c7; /* Border color */
+        padding: 10px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        overflow: hidden; /* Ensure no overflow */
     }
     
     #iframe-container iframe {
@@ -99,30 +83,9 @@
         border: none;
     }
 
-    #last-measurements-container {
-        display: none; /* Hide initially */
-        width: 100%;
-        margin-left: 2in;
-        margin-top: 20px; /* Space between vitals and last measurements */
-        padding: 10px;
-        background: #0a2136; /* Match background color */
-        color: white; /* Text color */
-        border: 1px solid #0eb3c7; /* Border color */
-        border-radius: 5px; /* Rounded corners */
-    }
-
-    #last-measurements-container h2 {
-        color: #0eb3c7; /* Heading color */
-    }
-
-    #last-measurements-container p {
-        margin: 10px 0;
-    }
-
-    #last-measurements-container img {
-        width: 100%;
-        height: auto;
-        margin-top: 10px;
+    /* Hide old vitals container and last measurements */
+    #vitals-container, #last-measurements-container {
+        display: none;
     }
 
     .button {
@@ -154,7 +117,7 @@
     </header>
     <!-- END Header -->
     
-    <div id="selectrole" class="main site join hidden">
+    <div id="selectrole" class="main site join">
         <h2>Select your role for this conference:</h2>
         <form>
             <div class="cf">
@@ -203,17 +166,25 @@
 
         <footer id="controls" class="controls cf">
             <ul>
-                <li><a id="id_muteaudio" title="Mute Audio"><img src="images/mute.png" alt="Mute Audio"></a></li>
-                <li><a id="id_mutevideo" title="Mute Video"><img src="images/mutevideo.png" alt="Mute Video"></a></li>
-                <li><a id="id_selfview" title="Show Self View"><img src="images/selfview.png" alt="Show Self View"></a></li>
+                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+                <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
+                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+                <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
+                <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
+                <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
+                <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
             </ul>
         </footer>
     </div>
-</div>
+    
+    <!-- Add the iframe container -->
+    <div id="iframe-container">
+        <iframe src="https://www.google.com" frameborder="0"></iframe>
+    </div>
 
-<!-- Add the iframe container -->
-<div id="iframe-container">
-    <iframe src="https://www.google.com" frameborder="0"></iframe>
+    <div id="footer"> </div>
 </div>
+<!-- END Container -->
+
 </body>
 </html>
