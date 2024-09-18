@@ -25,19 +25,6 @@
 
         // Initialize with the provided parameters
         initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
-
-        // Check if the video stream is active
-        checkVideoStream();
-    }
-
-    function checkVideoStream() {
-        var videoElement = document.getElementById("video");
-        var interval = setInterval(function() {
-            if (videoElement.srcObject && videoElement.srcObject.active) {
-                clearInterval(interval);
-                document.getElementById("iframe-container").style.display = "block"; // Show the iframe
-            }
-        }, 500); // Check every 500ms
     }
 
     function submitSelectRole() {
@@ -58,11 +45,8 @@
     }
 
     function startConference() {
-        // Ensure the conference has connected before showing the iframe
-        var videoElement = document.getElementById("video");
-        if (videoElement.srcObject && videoElement.srcObject.active) {
-            document.getElementById("iframe-container").style.display = "block"; // Show the iframe
-        }
+        // Show the iframe after the final button is pressed
+        document.getElementById("iframe-container").style.display = "block";
     }
     </script>
 
