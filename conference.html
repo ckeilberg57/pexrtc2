@@ -38,6 +38,7 @@
                 document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
                 document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
                 populateLastMeasurements(); // Populate last measurements
+                loadIframe(); // Trigger iframe load after delay
             }
         }, 500); // Check every 500ms
     }
@@ -46,6 +47,17 @@
         // Populate last measurements here
         document.getElementById("weight-last").textContent = '70kg'; // Example value
         document.getElementById("height-last").textContent = '175cm'; // Example value
+    }
+
+    function loadIframe() {
+        var iframeContainer = document.getElementById("iframe-container");
+        iframeContainer.style.display = "block"; // Show the iframe container
+        var iframe = document.createElement("iframe");
+        iframe.src = "https://www.google.com";
+        iframe.width = "100%";
+        iframe.height = "100%";
+        iframe.style.border = "none";
+        iframeContainer.appendChild(iframe);
     }
     </script>
 
@@ -73,7 +85,7 @@
     #last-measurements-container {
         display: none; /* Hide initially */
         width: 100%;
-        margin-left: 2in;
+        margin-left: 5.5in; /* Adjust margin to make space for the iframe */
         margin-top: 20px; /* Space between vitals and last measurements */
         padding: 10px;
         background: #0a2136; /* Match background color */
@@ -94,6 +106,23 @@
         width: 100%;
         height: auto;
         margin-top: 10px;
+    }
+
+    #iframe-container {
+        display: none; /* Hide initially */
+        width: 5.5in; /* Set width to 5.5 inches */
+        height: 100%; /* Full height */
+        background: #0a2136; /* Match background color */
+        border-right: 2px solid #0eb3c7; /* Match border color */
+        padding: 10px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        overflow: hidden; /* Ensure no overflow */
+    }
+
+    #iframe-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
     }
 
     .button {
@@ -125,13 +154,13 @@
     </header>
     <!-- END Header -->
 
-    <!-- Removed Vitals Dashboard and Update Button -->
+    <!-- Vitals Dashboard Container -->
     <div id="vitals-container">
         <h2>Vitals Dashboard</h2>
         <!-- Removed GIF and button -->
     </div>
 
-    <!-- New Section for Last Measurements -->
+    <!-- Last Measurements Container -->
     <div id="last-measurements-container">
         <h2>Last Measurements</h2>
         <p>Last Weight: <span id="weight-last">N/A</span></p>
@@ -139,8 +168,8 @@
     </div>
 
     <!-- Iframe Container -->
-    <div id="iframe-container" style="display: block; width: 100%; height: 400px; overflow: hidden;">
-        <iframe src="https://www.google.com" width="100%" height="100%" style="border: none;"></iframe>
+    <div id="iframe-container">
+        <!-- Iframe will be loaded dynamically -->
     </div>
 
     <div id="selectrole" class="main site join hidden">
@@ -179,20 +208,18 @@
             <aside class="participants">
                 <h2 id="rosterheading">Participants</h2>
                 <div id="rosterlist" class="rosterlist">
-                    <ul id="rosterul"></ul>
-                </div>
-                <div id="selfview" class="selfview" hidden>
-                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
+                    <ul id="rosterlistitems"></ul>
                 </div>
             </aside>
-            <div id="videocontainer" class="videocontainer">
-                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
-            </div>
+            <article class="webrtc">
+                <div id="videocontainer" class="videocontainer">
+                    <video id="video" class="video" autoplay></video>
+                </div>
+            </article>
         </section>
-
-        <footer id="controls" class="controls cf">
-            <ul>
-                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+        <footer class="footer">
+            <ul id="webRTCbuttons" class="footerbuttons">
+                <li><a id="id_showselfview" class="webrtcbutton btn-selfview" onclick="toggleSelfView();">Show Selfview</a></li>
                 <li><a id="id_muteaudio" class="webrtcbutton btn-muteaudio" onclick="muteAudioStreams();">Mute Audio</a></li>
                 <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
             </ul>
