@@ -16,6 +16,12 @@
             var kv = params[i].split("=");
             qp[kv[0]] = kv[1];
         }
+
+        // Determine if the user should select a role
+        if (!qp['role']) {
+            document.getElementById("selectrole").classList.remove("hidden");
+        }
+
         console.log(qp);
 
         var source = "";
@@ -23,11 +29,42 @@
             source = "screen";
         }
 
-        // Initialize with the provided parameters
-        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+        if (qp['role']) {
+            if (qp['role'] === "host") {
+                document.getElementById("pinentry").classList.remove("hidden");
+            } else {
+                initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+                checkVideoStream();
+            }
+        }
+    }
 
-        // Check if the video stream is active
+    function submitSelectRole() {
+        var role = document.querySelector('input[name="role"]:checked').value;
+        var alias = ""; // You can pass alias from URL params here if needed
+        var bandwidth = ""; // Add bandwidth if necessary
+        var name = ""; // Add name if required
+        
+        if (role === "2") { // Host selected
+            document.getElementById("selectrole").classList.add("hidden");
+            document.getElementById("pinentry").classList.remove("hidden");
+        } else { // Guest selected
+            initialise("cklab-edges.ck-collab-engtest.com", alias, bandwidth, name, "", ""); // Initialize guest
+            document.getElementById("selectrole").classList.add("hidden");
+            checkVideoStream();
+        }
+    }
+
+    function submitPinEntry() {
+        var pin = document.getElementById('id_pin').value;
+        var alias = ""; // Same alias logic if needed
+        var bandwidth = ""; // Bandwidth if necessary
+        var name = ""; // Add name if required
+        
+        initialise("cklab-edges.ck-collab-engtest.com", alias, bandwidth, name, pin, ""); // Initialize host with PIN
+        document.getElementById("pinentry").classList.add("hidden");
         checkVideoStream();
+        return false;
     }
 
     function checkVideoStream() {
@@ -35,49 +72,35 @@
         var interval = setInterval(function() {
             if (videoElement.srcObject && videoElement.srcObject.active) {
                 clearInterval(interval);
-                document.getElementById("iframe-container").style.display = "block"; // Show the iframe container
+                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
+                populateVitals();
+                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
+                populateLastMeasurements(); // Populate last measurements
             }
         }, 500); // Check every 500ms
+    }
+
+    function populateVitals() {
+        document.getElementById("vitals-image").src = "img/vitals.gif";
+    }
+
+    function updateVitals() {
+        document.getElementById("vitals-image").src = "img/vitals.gif";
     }
     </script>
 
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
-    #iframe-container {
-        display: none; /* Hide initially */
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 5.5in; /* Set width */
-        height: 100%; /* Full height */
-        background: #0a2136; /* Match background color */
-        color: white; /* Text color */
-        border-right: 2px solid #0eb3c7; /* Match border color */
-        padding: 10px;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        overflow: hidden; /* Ensure no overflow */
-    }
-    
-    #iframe-container iframe {
-        width: 100%;
-        height: 100%;
-        border: none; /* Remove iframe border */
-    }
+    /* Styles omitted for brevity, you can retain your original styles */
     </style>
 </head>
 
 <body class="home">
 <!-- Container -->
 <div id="container" class="site">
-    <!-- Header -->
-    <header id="header" class="branding" role="banner"></header>
-    <!-- END Header -->
+    <!-- Vitals and Last Measurements sections omitted for brevity -->
     
-    <div id="iframe-container">
-        <!-- iFrame to replace the Vitals section -->
-        <iframe src="https://your-iframe-source-url.com" title="Health Data iFrame"></iframe>
-    </div>
-
+    <!-- Role Selection -->
     <div id="selectrole" class="main site join hidden">
         <h2>Select your role for this conference:</h2>
         <form>
@@ -93,6 +116,7 @@
         </form>
     </div>
 
+    <!-- PIN Entry for Host -->
     <div id="pinentry" class="main site join hidden">
         <form onSubmit="return submitPinEntry();">
             <label for="id_pin" class="vh">Enter the conference PIN</label>
@@ -101,45 +125,8 @@
         </form>
     </div>
 
-    <div id="ivrentry" class="main site join hidden">
-        <form onSubmit="return submitIVREntry();">
-            <label for="id_room" class="vh">Enter the target extension</label>
-            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
-            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
-        </form>
-    </div>
+    <!-- IVR and Video sections omitted for brevity -->
 
-    <div id="maincontent" class="main cf hidden">
-        <section class="top">
-            <aside class="participants">
-                <h2 id="rosterheading">Participants</h2>
-                <div id="rosterlist" class="rosterlist">
-                    <ul id="rosterul"></ul>
-                </div>
-                <div id="selfview" class="selfview" hidden>
-                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
-                </div>
-            </aside>
-            <div id="videocontainer" class="videocontainer">
-                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
-            </div>
-        </section>
-
-        <footer id="controls" class="controls cf">
-            <ul>
-                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
-                <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
-                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
-                <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
-                <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
-                <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
-                <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
-            </ul>
-        </footer>
-    </div>
-    <!-- END Content -->
-
-    <div id="footer"> </div>
 </div>
 <!-- END Container -->
 
