@@ -23,44 +23,47 @@
             source = "screen";
         }
 
-        // Initialize with the provided parameters
-        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
-
-        // Check if the video stream is active
-        checkVideoStream();
+        // Show role selection form initially
+        document.getElementById("selectrole").style.display = "block";
     }
 
-    function checkVideoStream() {
-        var videoElement = document.getElementById("video");
-        var interval = setInterval(function() {
-            if (videoElement.srcObject && videoElement.srcObject.active) {
-                clearInterval(interval);
-                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
-                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
-                populateLastMeasurements(); // Populate last measurements
-                loadIframe(); // Trigger iframe load after delay
-            }
-        }, 500); // Check every 500ms
+    function submitSelectRole() {
+        // Hide role selection and show PIN entry if Host role is selected
+        var role = document.querySelector('input[name="role"]:checked').value;
+        if (role == "2") { // Host
+            document.getElementById("selectrole").style.display = "none";
+            document.getElementById("pinentry").style.display = "block";
+        } else { // Guest
+            document.getElementById("selectrole").style.display = "none";
+            startConference();
+        }
     }
 
-    function populateLastMeasurements() {
-        // Populate last measurements here
-        document.getElementById("weight-last").textContent = '70kg'; // Example value
-        document.getElementById("height-last").textContent = '175cm'; // Example value
+    function submitPinEntry() {
+        var pin = document.getElementById("id_pin").value;
+        if (pin) {
+            document.getElementById("pinentry").style.display = "none";
+            startConference();
+        }
+        return false; // Prevent form submission
     }
 
-    function loadIframe() {
-        var iframeContainer = document.getElementById("iframe-container");
-        iframeContainer.style.display = "block"; // Show the iframe container
-        var iframe = document.createElement("iframe");
-        iframe.src = "https://www.google.com";
-        iframe.width = "100%";
-        iframe.height = "100%";
-        iframe.style.border = "none";
-        iframeContainer.appendChild(iframe);
+    function startConference() {
+        var url = window.location.href;
+        var params = url.substr(url.indexOf("?")+1).split("&");
+        var i;
+        var qp = {};
+        for (i=0;i<params.length;i++) {
+            var kv = params[i].split("=");
+            qp[kv[0]] = kv[1];
+        }
+        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", "");
+
+        // Display iframe after conference starts
+        document.getElementById("maincontent").style.display = "block";
+        document.getElementById("iframe-container").style.display = "block";
     }
     </script>
-
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
     #vitals-container {
@@ -68,24 +71,38 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: 5.5in; /* Set width to 5.5 inches */
+        width: 5.5in; /* Set width */
         height: 100%; /* Full height */
         background: #0a2136; /* Match background color */
         color: white; /* Text color */
-        border-right: 2px solid #0eb3c7; /* Match border color */
+        border-right: 2px solid #0eb3c7; /* Border color */
         padding: 10px;
         box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         overflow: hidden; /* Ensure no overflow */
     }
     
-    #vitals-container h2 {
-        color: #0eb3c7; /* Heading color */
+    #iframe-container {
+        display: none; /* Hide initially */
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #0a2136;
+        color: white;
+        border-right: 2px solid #0eb3c7; /* Border color */
     }
     
+    #iframe-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
     #last-measurements-container {
         display: none; /* Hide initially */
         width: 100%;
-        margin-left: 5.5in; /* Adjust margin to make space for the iframe */
+        margin-left: 2in;
         margin-top: 20px; /* Space between vitals and last measurements */
         padding: 10px;
         background: #0a2136; /* Match background color */
@@ -106,23 +123,6 @@
         width: 100%;
         height: auto;
         margin-top: 10px;
-    }
-
-    #iframe-container {
-        display: none; /* Hide initially */
-        width: 5.5in; /* Set width to 5.5 inches */
-        height: 100%; /* Full height */
-        background: #0a2136; /* Match background color */
-        border-right: 2px solid #0eb3c7; /* Match border color */
-        padding: 10px;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        overflow: hidden; /* Ensure no overflow */
-    }
-
-    #iframe-container iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
     }
 
     .button {
@@ -153,25 +153,7 @@
         <!-- <h1>Connect</h1> -->
     </header>
     <!-- END Header -->
-
-    <!-- Vitals Dashboard Container -->
-    <div id="vitals-container">
-        <h2>Vitals Dashboard</h2>
-        <!-- Removed GIF and button -->
-    </div>
-
-    <!-- Last Measurements Container -->
-    <div id="last-measurements-container">
-        <h2>Last Measurements</h2>
-        <p>Last Weight: <span id="weight-last">N/A</span></p>
-        <p>Last Height: <span id="height-last">N/A</span></p>
-    </div>
-
-    <!-- Iframe Container -->
-    <div id="iframe-container">
-        <!-- Iframe will be loaded dynamically -->
-    </div>
-
+    
     <div id="selectrole" class="main site join hidden">
         <h2>Select your role for this conference:</h2>
         <form>
@@ -208,23 +190,30 @@
             <aside class="participants">
                 <h2 id="rosterheading">Participants</h2>
                 <div id="rosterlist" class="rosterlist">
-                    <ul id="rosterlistitems"></ul>
+                    <ul id="rosterul"></ul>
+                </div>
+                <div id="selfview" class="selfview" hidden>
+                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
                 </div>
             </aside>
-            <article class="webrtc">
-                <div id="videocontainer" class="videocontainer">
-                    <video id="video" class="video" autoplay></video>
-                </div>
-            </article>
+            <div id="videocontainer" class="videocontainer">
+                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
+            </div>
         </section>
-        <footer class="footer">
-            <ul id="webRTCbuttons" class="footerbuttons">
-                <li><a id="id_showselfview" class="webrtcbutton btn-selfview" onclick="toggleSelfView();">Show Selfview</a></li>
-                <li><a id="id_muteaudio" class="webrtcbutton btn-muteaudio" onclick="muteAudioStreams();">Mute Audio</a></li>
-                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+
+        <footer id="controls" class="controls cf">
+            <ul>
+                <li><a id="id_muteaudio" title="Mute Audio"><img src="images/mute.png" alt="Mute Audio"></a></li>
+                <li><a id="id_mutevideo" title="Mute Video"><img src="images/mutevideo.png" alt="Mute Video"></a></li>
+                <li><a id="id_selfview" title="Show Self View"><img src="images/selfview.png" alt="Show Self View"></a></li>
             </ul>
         </footer>
     </div>
+</div>
+
+<!-- Add the iframe container -->
+<div id="iframe-container">
+    <iframe src="https://www.google.com" frameborder="0"></iframe>
 </div>
 </body>
 </html>
