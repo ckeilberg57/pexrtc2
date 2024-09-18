@@ -58,8 +58,11 @@
     }
 
     function startConference() {
-        // Add any additional conference start logic here if needed
-        document.getElementById("iframe-container").style.display = "block"; // Show the iframe
+        // Ensure the conference has connected before showing the iframe
+        var videoElement = document.getElementById("video");
+        if (videoElement.srcObject && videoElement.srcObject.active) {
+            document.getElementById("iframe-container").style.display = "block"; // Show the iframe
+        }
     }
     </script>
 
