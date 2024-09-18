@@ -1,12 +1,14 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
+## Conference HTML
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
     <title>Pexip Health</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <meta name="robots" content="noindex, nofollow" />
     <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
     <script type="text/javascript" src="webui.js"></script>
-    <script type="text/javascript">
+    <script type='text/javascript'>
     window.onload = function() {
         var url = window.location.href;
         var params = url.substr(url.indexOf("?")+1).split("&");
@@ -25,55 +27,38 @@
 
         // Initialize with the provided parameters
         initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
-        
-        // Show the role selection form
-        document.getElementById('selectrole').style.display = 'block';
-    };
 
-    function submitSelectRole() {
-        var role = document.querySelector('input[name="role"]:checked').value;
-        console.log("Selected role:", role);
+        // Check if the video stream is active
+        checkVideoStream();
+    }
 
-        // If role is Host, show the PIN entry form
-        if (role === '2') {
-            document.getElementById('selectrole').style.display = 'none';
-            document.getElementById('pinentry').style.display = 'block';
-        } else {
-            // For Guest, directly show the IVR entry form or start the conference
-            document.getElementById('selectrole').style.display = 'none';
-            document.getElementById('ivrentry').style.display = 'block';
+    function checkVideoStream() {
+        var videoElement = document.getElementById("video");
+        var interval = setInterval(function() {
+            if (videoElement.srcObject && videoElement.srcObject.active) {
+                clearInterval(interval);
+                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
+                populateVitals();
+                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
+                populateLastMeasurements(); // Populate last measurements
+            }
+        }, 500); // Check every 500ms
+    }
+
+        // Function to populate the Vitals Dashboard with the image
+        function populateVitals() {
+            // Set the GIF as the source for the vitals image
+            document.getElementById("vitals-image").src = "img/vitals.gif";
         }
-    }
-
-    function submitPinEntry() {
-        var pin = document.getElementById('id_pin').value;
-        console.log("Entered PIN:", pin);
-        document.getElementById('pinentry').style.display = 'none';
-        document.getElementById('ivrentry').style.display = 'block';
-        return false; // Prevent form submission
-    }
-
-    function submitIVREntry() {
-        var room = document.getElementById('id_room').value;
-        console.log("Entered room:", room);
         
-        // Join the conference
-        joinConference(room);
-        return false; // Prevent form submission
-    }
+        // Function to update the Vitals Dashboard image (if needed)
+        function updateVitals() {
+            // Update the image (or any other details if necessary)
+            document.getElementById("vitals-image").src = "img/vitals.gif"; // Same GIF or a new one if needed
+        }
 
-    function joinConference(room) {
-        var iframe = document.createElement('iframe');
-        iframe.id = 'conference-iframe';
-        iframe.src = `https://cklab-edges.ck-collab-engtest.com/webapp3/m/?conference=apptmd${Math.random().toString().slice(2)}&name=${encodeURIComponent(document.querySelector('input[name="role"]:checked').nextSibling.textContent.trim())}&pin=${document.getElementById('id_pin').value}&role=host&callType=video&join=1`;
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.border = 'none';
-        
-        document.getElementById('maincontent').appendChild(iframe);
-        document.getElementById('maincontent').style.display = 'block';
-    }
     </script>
+
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
     #vitals-container {
@@ -144,16 +129,9 @@
     .button:hover {
         background-color: #0a8a9c;
     }
-
-    #selectrole, #pinentry, #ivrentry {
-        display: none; /* Hide initially */
-    }
-
-    #maincontent {
-        display: none; /* Hide initially */
-    }
     </style>
 </head>
+
 <body class="home">
 <!-- Container -->
 <div id="container" class="site">
@@ -178,7 +156,7 @@
         <p>Last Height: <span id="height-last">N/A</span></p>
     </div>
 
-    <div id="selectrole" class="main site join">
+    <div id="selectrole" class="main site join hidden">
         <h2>Select your role for this conference:</h2>
         <form>
             <div class="cf">
@@ -193,7 +171,7 @@
         </form>
     </div>
 
-    <div id="pinentry" class="main site join">
+    <div id="pinentry" class="main site join hidden">
         <form onSubmit="return submitPinEntry();">
             <label for="id_pin" class="vh">Enter the conference PIN</label>
             <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
@@ -201,7 +179,7 @@
         </form>
     </div>
 
-    <div id="ivrentry" class="main site join">
+    <div id="ivrentry" class="main site join hidden">
         <form onSubmit="return submitIVREntry();">
             <label for="id_room" class="vh">Enter the target extension</label>
             <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
@@ -209,9 +187,39 @@
         </form>
     </div>
 
-    <div id="maincontent" class="main site">
-        <!-- The iframe will be dynamically added here -->
+    <div id="maincontent" class="main cf hidden">
+        <section class="top">
+            <aside class="participants">
+                <h2 id="rosterheading">Participants</h2>
+                <div id="rosterlist" class="rosterlist">
+                    <ul id="rosterul"></ul>
+                </div>
+                <div id="selfview" class="selfview" hidden>
+                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
+                </div>
+            </aside>
+            <div id="videocontainer" class="videocontainer">
+                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
+            </div>
+        </section>
+
+        <footer id="controls" class="controls cf">
+            <ul>
+                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+                <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
+                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+                <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
+                <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
+                <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
+                <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
+            </ul>
+        </footer>
     </div>
+    <!-- END Content -->
+
+    <div id="footer"> </div>
 </div>
+<!-- END Container -->
+
 </body>
 </html>
