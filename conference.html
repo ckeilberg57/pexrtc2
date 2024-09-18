@@ -14,7 +14,6 @@
     width: 5in;
     height: 300px;
     background-color: #333;
-    color: white;
     display: none; /* Initially hidden */
     border: none;
     z-index: 1000;
@@ -25,8 +24,6 @@
     width: 100%;
     height: 100%;
     border: none;
-    background-color: #0a2136;
-    color: white;
   }
 </style>
 <script type='text/javascript'>
@@ -46,7 +43,7 @@ window.onload = function() {
         source = "screen";
     }
 
-    //pin, source
+    // Initialize conference
     initialise("pex-gcc.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
 
     // Check if videocontainer is loaded
@@ -55,7 +52,34 @@ window.onload = function() {
         if (videoContainer) {
             // Show iframe when videocontainer is present
             document.getElementById("health-form-iframe").style.display = 'block';
-            clearInterval(checkVideoContainer);
+            
+            // Load content into the iframe
+            var iframe = document.getElementById("health-form-iframe");
+            var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(`
+              <html>
+                <body style="color: white; background-color: #0a2136; font-family: Arial, sans-serif; padding: 10px;">
+                  <h2>Enter Your Current Health Data</h2>
+                  <form>
+                    <label>Current Heart Rate:</label><br>
+                    <input type="text" name="heart-rate" style="width: 100%;"><br><br>
+
+                    <label>Current O2 Level:</label><br>
+                    <input type="text" name="oxygen-level" style="width: 100%;"><br><br>
+
+                    <label>Blood Pressure (Systolic/Diastolic):</label><br>
+                    <input type="text" name="blood-pressure-systolic" placeholder="Systolic" style="width: 48%;">
+                    <input type="text" name="blood-pressure-diastolic" placeholder="Diastolic" style="width: 48%;"><br><br>
+
+                    <input type="submit" value="Submit">
+                  </form>
+                </body>
+              </html>
+            `);
+            iframeDoc.close();
+
+            clearInterval(checkVideoContainer); // Stop checking after iframe is shown
         }
     }, 500); // Check every 500ms
 };
@@ -69,8 +93,6 @@ window.onload = function() {
 <div id="container" class="site">
     <!-- Header -->
     <header id="header" class="branding" role="banner">
-       <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
-       <!-- <h1>Connect</h1> -->
     </header>
     <!-- END Header -->
 
@@ -136,26 +158,7 @@ window.onload = function() {
     </div>
 
     <!-- Add the iframe here, initially hidden -->
-    <iframe id="health-form-iframe">
-      <html>
-        <body style="color: white; background-color: #0a2136;">
-          <h2>Enter Your Current Health Data</h2>
-          <form>
-            <label>Current Heart Rate:</label><br>
-            <input type="text" name="heart-rate" style="width: 100%;"><br><br>
-
-            <label>Current O2 Level:</label><br>
-            <input type="text" name="oxygen-level" style="width: 100%;"><br><br>
-
-            <label>Blood Pressure (Systolic/Diastolic):</label><br>
-            <input type="text" name="blood-pressure-systolic" placeholder="Systolic" style="width: 48%;">
-            <input type="text" name="blood-pressure-diastolic" placeholder="Diastolic" style="width: 48%;"><br><br>
-
-            <input type="submit" value="Submit">
-          </form>
-        </body>
-      </html>
-    </iframe>
+    <iframe id="health-form-iframe"></iframe>
 
     <!-- END Content -->
     <div id="footer"> </div>
