@@ -1,141 +1,203 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pexip Health</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
-    <script src="webui.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
+    <script type="text/javascript" src="webui.js"></script>
+    <script type='text/javascript'>
+    window.onload = function() {
+        var url = window.location.href;
+        var params = url.substr(url.indexOf("?")+1).split("&");
+        var i;
+        var qp = {};
+        for (i=0;i<params.length;i++) {
+            var kv = params[i].split("=");
+            qp[kv[0]] = kv[1];
+        }
+        console.log(qp);
+
+        var source = "";
+        if ("join_pres" in qp) {
+            source = "screen";
+        }
+
+        // Initialize with the provided parameters
+        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+
+        // Check if the video stream is active
+        checkVideoStream();
+    }
+
+    function checkVideoStream() {
+        var videoElement = document.getElementById("video");
+        var interval = setInterval(function() {
+            if (videoElement.srcObject && videoElement.srcObject.active) {
+                clearInterval(interval);
+                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
+                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
+                populateLastMeasurements(); // Populate last measurements
+            }
+        }, 500); // Check every 500ms
+    }
+
+    function populateLastMeasurements() {
+        // Populate last measurements here
+        document.getElementById("weight-last").textContent = '70kg'; // Example value
+        document.getElementById("height-last").textContent = '175cm'; // Example value
+    }
+    </script>
+
+    <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
-        /* Add your CSS styles here */
-        #vitals-container, #last-measurements-container {
-            display: none; /* Initially hidden */
-        }
-        
-        #iframe-container {
-            width: 100%;
-            height: 400px; /* Adjust as needed */
-            overflow: hidden;
-        }
+    #vitals-container {
+        display: none; /* Hide initially */
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 5.5in; /* Set width to 5.5 inches */
+        height: 100%; /* Full height */
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border-right: 2px solid #0eb3c7; /* Match border color */
+        padding: 10px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        overflow: hidden; /* Ensure no overflow */
+    }
+    
+    #vitals-container h2 {
+        color: #0eb3c7; /* Heading color */
+    }
+    
+    #last-measurements-container {
+        display: none; /* Hide initially */
+        width: 100%;
+        margin-left: 2in;
+        margin-top: 20px; /* Space between vitals and last measurements */
+        padding: 10px;
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border: 1px solid #0eb3c7; /* Border color */
+        border-radius: 5px; /* Rounded corners */
+    }
+
+    #last-measurements-container h2 {
+        color: #0eb3c7; /* Heading color */
+    }
+
+    #last-measurements-container p {
+        margin: 10px 0;
+    }
+
+    #last-measurements-container img {
+        width: 100%;
+        height: auto;
+        margin-top: 10px;
+    }
+
+    .button {
+        display: inline-block;
+        background-color: #0eb3c7;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    .button:hover {
+        background-color: #0a8a9c;
+    }
     </style>
 </head>
-<body>
-    <header>
-        <h1>Conference Interface</h1>
-    </header>
 
+<body class="home">
+<!-- Container -->
+<div id="container" class="site">
+    <!-- Header -->
+    <header id="header" class="branding" role="banner">
+        <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
+        <!-- <h1>Connect</h1> -->
+    </header>
+    <!-- END Header -->
+
+    <!-- Removed Vitals Dashboard and Update Button -->
     <div id="vitals-container">
         <h2>Vitals Dashboard</h2>
-        <img id="vitals-image" src="img/vitals.gif" alt="Vitals Dashboard">
+        <!-- Removed GIF and button -->
     </div>
 
+    <!-- New Section for Last Measurements -->
     <div id="last-measurements-container">
         <h2>Last Measurements</h2>
         <p>Last Weight: <span id="weight-last">N/A</span></p>
         <p>Last Height: <span id="height-last">N/A</span></p>
     </div>
 
-    <div id="iframe-container"></div>
+    <!-- Iframe Container -->
+    <div id="iframe-container" style="display: none; width: 100%; height: 400px; overflow: hidden;">
+        <iframe src="your_iframe_source.html" width="100%" height="100%" style="border: none;"></iframe>
+    </div>
 
-    <div id="selectrole" class="main site join">
+    <div id="selectrole" class="main site join hidden">
         <h2>Select your role for this conference:</h2>
         <form>
             <div class="cf">
-                <input type="radio" value="1" name="role" id="id_guest" checked>
+                <input type="radio" value="1" name="role" id="id_guest" class="webrtcinput" checked>
                 <label for="id_guest">Guest</label>
             </div>
             <div class="cf">
-                <input type="radio" value="2" name="role" id="id_host">
+                <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
                 <label for="id_host">Host</label>
             </div>
-            <button type="button" onclick="submitSelectRole()">Join Conference</button>
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
         </form>
     </div>
 
-    <div id="pinentry" class="main site join">
-        <form onsubmit="return submitPinEntry()">
-            <label for="id_pin">Enter the conference PIN</label>
-            <input type="password" name="pin" id="id_pin" placeholder="Enter the conference PIN" required>
-            <button type="button" onclick="submitPinEntry()">Join Conference</button>
+    <div id="pinentry" class="main site join hidden">
+        <form onSubmit="return submitPinEntry();">
+            <label for="id_pin" class="vh">Enter the conference PIN</label>
+            <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
         </form>
     </div>
 
-    <div id="maincontent" class="main">
+    <div id="ivrentry" class="main site join hidden">
+        <form onSubmit="return submitIVREntry();">
+            <label for="id_room" class="vh">Enter the target extension</label>
+            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
+        </form>
+    </div>
+
+    <div id="maincontent" class="main cf hidden">
         <section class="top">
             <aside class="participants">
                 <h2 id="rosterheading">Participants</h2>
-                <div id="rosterlist" class="roster"></div>
-            </aside>
-
-            <div class="video">
-                <div class="videowrapper">
-                    <video id="video" autoplay muted></video>
+                <div id="rosterlist" class="rosterlist">
+                    <ul id="rosterul"></ul>
                 </div>
+                <div id="selfview" class="selfview" hidden>
+                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
+                </div>
+            </aside>
+            <div id="videocontainer" class="videocontainer">
+                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
             </div>
         </section>
+
+        <footer id="controls" class="controls cf">
+            <ul>
+                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+                <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
+                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+            </ul>
+        </footer>
     </div>
-
-    <footer>
-        <p>&copy; 2024</p>
-    </footer>
-
-    <script>
-        function initialise(server, alias, bandwidth, name, extra, source) {
-            console.log('Initialising conference with:', { server, alias, bandwidth, name, extra, source });
-            // Implement your initialisation logic here
-        }
-
-        function submitSelectRole() {
-            var role = document.querySelector('input[name="role"]:checked').value;
-            var alias = 'sampleAlias'; // Replace with actual alias
-            var bandwidth = 'medium'; // Replace with actual bandwidth
-            var name = 'Sample Name'; // Replace with actual name
-            initialise('cklab-edges.ck-collab-engtest.com', alias, bandwidth, name, '', role);
-            document.getElementById('video').style.display = 'block'; // Ensure video element is displayed
-            checkVideoStream();
-        }
-
-        function submitPinEntry() {
-            var pin = document.getElementById('id_pin').value;
-            console.log('PIN entered:', pin);
-            // Implement your PIN entry logic here
-            checkVideoStream();
-            return false; // Prevent form submission
-        }
-
-        function checkVideoStream() {
-            var videoElement = document.getElementById('video');
-            var interval = setInterval(function() {
-                if (videoElement.srcObject && videoElement.srcObject.active) {
-                    clearInterval(interval);
-                    document.getElementById('vitals-container').style.display = 'block';
-                    populateVitals();
-                    document.getElementById('last-measurements-container').style.display = 'block';
-                    populateLastMeasurements();
-                    loadIframe();
-                }
-            }, 500); // Check every 500ms
-        }
-
-        function loadIframe() {
-            var iframe = document.createElement('iframe');
-            iframe.src = 'your_iframe_source.html'; // Replace with actual iframe source
-            iframe.width = '100%';
-            iframe.height = '400px'; // Adjust as needed
-            iframe.style.border = 'none';
-            document.getElementById('iframe-container').appendChild(iframe);
-        }
-
-        function populateVitals() {
-            document.getElementById('vitals-image').src = 'img/vitals.gif';
-        }
-
-        function populateLastMeasurements() {
-            // Populate last measurements here
-            document.getElementById('weight-last').textContent = '70kg'; // Example value
-            document.getElementById('height-last').textContent = '175cm'; // Example value
-        }
-    </script>
+</div>
 </body>
 </html>
