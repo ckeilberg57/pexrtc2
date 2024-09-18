@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
@@ -32,6 +31,29 @@ window.onload = function()
 </script>
 
 <meta name="robots" content="NONE,NOARCHIVE" />
+<style>
+  /* Additional styles for iframe and layout */
+  .main-content {
+    display: flex;
+    align-items: stretch;
+    height: calc(100vh - 100px); /* Adjust based on header/footer height */
+  }
+  .iframe-container {
+    flex: 1;
+    margin-right: 20px; /* Space between iframe and video */
+  }
+  .videocontainer {
+    flex: 3;
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+</style>
 </head>
 
 <body class="home">
@@ -48,8 +70,7 @@ window.onload = function()
     <!-- END Header -->
 
     <!-- Content -->
-
-  <div id="selectrole" class="main site join hidden">
+    <div id="selectrole" class="main site join hidden">
     <h2>Select your role for this conference:</h2>
     <form>
         <div class="cf">
@@ -65,7 +86,6 @@ window.onload = function()
     </form>
   </div>
 
-
   <div id="pinentry" class="main site join hidden">
     <form onSubmit="return submitPinEntry();">
         <label for="id_pin" class="vh">Enter the conference PIN</label>
@@ -74,7 +94,6 @@ window.onload = function()
         <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
     </form>
   </div>
-
 
   <div id="ivrentry" class="main site join hidden">
     <form onSubmit="return submitIVREntry();">
@@ -85,36 +104,40 @@ window.onload = function()
     </form>
   </div>
 
- 
-  <div id="maincontent" class="main cf hidden">
-    <section class="top">
-      <aside class="participants"><!-- List of participants -->
-        <h2 id="rosterheading">Participants</h2>
-        <div id="rosterlist" class="rosterlist">
-          <ul id="rosterul">
-          </ul>
+  <div id="maincontent" class="main-content hidden">
+    <aside class="iframe-container">
+      <iframe src="your-iframe-source-url" title="Information" id="infoIframe"></iframe>
+    </aside>
+    <div class="videocontainer">
+      <section class="top">
+        <aside class="participants"><!-- List of participants -->
+          <h2 id="rosterheading">Participants</h2>
+          <div id="rosterlist" class="rosterlist">
+            <ul id="rosterul">
+            </ul>
+          </div>
+          <div id="selfview" class="selfview" hidden>
+            <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true">
+            </video>
+          </div>
+        </aside>
+        <div id="videocontainer" class="videocontainer">
+          <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
         </div>
-        <div id="selfview" class="selfview" hidden>
-          <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true">
-          </video>
-        </div>
-      </aside>
-      <div id="videocontainer" class="videocontainer">
-        <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
-      </div>
-    </section>
+      </section>
 
-    <footer id="controls" class="controls cf">
-      <ul>
-        <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
-        <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
-        <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
-        <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
-        <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
-        <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
-        <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
-      </ul>
-    </footer>
+      <footer id="controls" class="controls cf">
+        <ul>
+          <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+          <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
+          <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+          <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
+          <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
+          <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
+          <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
+        </ul>
+      </footer>
+    </div>
   </div>
 
     <!-- END Content -->
