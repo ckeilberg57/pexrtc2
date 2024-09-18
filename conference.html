@@ -35,36 +35,20 @@
         var interval = setInterval(function() {
             if (videoElement.srcObject && videoElement.srcObject.active) {
                 clearInterval(interval);
-                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
-                populateVitals();
-                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
-                populateLastMeasurements(); // Populate last measurements
+                document.getElementById("iframe-container").style.display = "block"; // Show the iframe container
             }
         }, 500); // Check every 500ms
     }
-
-        // Function to populate the Vitals Dashboard with the image
-        function populateVitals() {
-            // Set the GIF as the source for the vitals image
-            document.getElementById("vitals-image").src = "img/vitals.gif";
-        }
-        
-        // Function to update the Vitals Dashboard image (if needed)
-        function updateVitals() {
-            // Update the image (or any other details if necessary)
-            document.getElementById("vitals-image").src = "img/vitals.gif"; // Same GIF or a new one if needed
-        }
-
     </script>
 
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
-    #vitals-container {
+    #iframe-container {
         display: none; /* Hide initially */
         position: absolute;
         left: 0;
         top: 0;
-        width: 5.5in; /* Set width to 4 inches */
+        width: 5.5in; /* Set width */
         height: 100%; /* Full height */
         background: #0a2136; /* Match background color */
         color: white; /* Text color */
@@ -74,58 +58,10 @@
         overflow: hidden; /* Ensure no overflow */
     }
     
-    #vitals-container h2 {
-        color: #0eb3c7; /* Heading color */
-    }
-    
-    #vitals-container img {
-        width: 5.5in; /* Set image width to 4 inches */
-        height: 8in; /* Set image height to 3 inches */
-        display: block; /* Remove any extra space below the image */
-        margin-top: 10px; /* Space above the image */
-    }
-            
-    #last-measurements-container {
-        display: none; /* Hide initially */
+    #iframe-container iframe {
         width: 100%;
-        margin-left: 2in;
-        margin-top: 20px; /* Space between vitals and last measurements */
-        padding: 10px;
-        background: #0a2136; /* Match background color */
-        color: white; /* Text color */
-        border: 1px solid #0eb3c7; /* Border color */
-        border-radius: 5px; /* Rounded corners */
-    }
-
-    #last-measurements-container h2 {
-        color: #0eb3c7; /* Heading color */
-    }
-
-    #last-measurements-container p {
-        margin: 10px 0;
-    }
-
-    #last-measurements-container img {
-        width: 100%;
-        height: auto;
-        margin-top: 10px;
-    }
-
-    .button {
-        display: inline-block;
-        background-color: #0eb3c7;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 20px;
-        font-size: 16px;
-    }
-
-    .button:hover {
-        background-color: #0a8a9c;
+        height: 100%;
+        border: none; /* Remove iframe border */
     }
     </style>
 </head>
@@ -134,24 +70,12 @@
 <!-- Container -->
 <div id="container" class="site">
     <!-- Header -->
-    <header id="header" class="branding" role="banner">
-        <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
-        <!-- <h1>Connect</h1> -->
-    </header>
+    <header id="header" class="branding" role="banner"></header>
     <!-- END Header -->
     
-    <div id="vitals-container">
-        <h2>Vitals Dashboard</h2>
-        <!-- Image to display the GIF -->
-        <img id="vitals-image" src="img/vitals.gif" alt="Vitals Dashboard" />
-        <button class="button" onclick="updateVitals()">Take New Measurement</button>
-    </div>
-
-    <!-- New Section for Last Measurements -->
-    <div id="last-measurements-container">
-        <h2>Last Measurements</h2>
-        <p>Last Weight: <span id="weight-last">N/A</span></p>
-        <p>Last Height: <span id="height-last">N/A</span></p>
+    <div id="iframe-container">
+        <!-- iFrame to replace the Vitals section -->
+        <iframe src="https://your-iframe-source-url.com" title="Health Data iFrame"></iframe>
     </div>
 
     <div id="selectrole" class="main site join hidden">
