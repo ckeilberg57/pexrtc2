@@ -1,167 +1,228 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
-<title>] Pexip Health[</title>
-<link rel="stylesheet" type="text/css" href="style.css" />
-<meta name="robots" content="noindex, nofollow" />
-<script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
-<script type="text/javascript" src="webui.js"></script>
-<script type='text/javascript'>
-window.onload = function() {
-    var url = window.location.href;
-    var params = url.substr(url.indexOf("?")+1).split("&");
-    var i;
-    var qp = {};
-    for (i=0;i<params.length;i++) {
-        var kv = params[i].split("=");
-        qp[kv[0]] = kv[1];
+    <title>Pexip Health</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta name="robots" content="noindex, nofollow" />
+    <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
+    <script type="text/javascript" src="webui.js"></script>
+    <script type='text/javascript'>
+    window.onload = function() {
+        var url = window.location.href;
+        var params = url.substr(url.indexOf("?")+1).split("&");
+        var i;
+        var qp = {};
+        for (i=0;i<params.length;i++) {
+            var kv = params[i].split("=");
+            qp[kv[0]] = kv[1];
+        }
+        console.log(qp);
+
+        var source = "";
+        if ("join_pres" in qp) {
+            source = "screen";
+        }
+
+        // Initialize with the provided parameters
+        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+
+        // Check if the video stream is active
+        checkVideoStream();
     }
-    console.log(qp);
 
-    var source = "";
-    if ("join_pres" in qp) {
-        source = "screen";
+    function checkVideoStream() {
+        var videoElement = document.getElementById("video");
+        var interval = setInterval(function() {
+            if (videoElement.srcObject && videoElement.srcObject.active) {
+                clearInterval(interval);
+                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
+                populateVitals();
+                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
+                populateLastMeasurements(); // Populate last measurements
+
+                // Load the iframe after the video stream is active
+                loadIframe();
+            }
+        }, 500); // Check every 500ms
     }
 
-    //pin, source
-    initialise("pex-gcc.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
-
-    // Call the function to load the iframe after conference starts
-    onConferenceStarted();
-}
-
-function onConferenceStarted() {
-    // Assuming `startConference` function is called when the conference actually starts
-    // You may need to modify this function based on your actual implementation
-    var iframeContainer = document.getElementById('iframe-container');
-    if (iframeContainer) {
+    function loadIframe() {
         var iframe = document.createElement('iframe');
-        iframe.src = 'your-iframe-source-url'; // Replace with your iframe URL
-        iframe.title = 'Information';
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.border = 'none';
-        iframeContainer.appendChild(iframe);
+        iframe.src = "your_iframe_source.html"; // Replace with the actual iframe source
+        iframe.width = "100%";
+        iframe.height = "400px"; // Adjust the height as needed
+        iframe.style.border = "none";
+        document.getElementById("iframe-container").appendChild(iframe);
     }
-}
-</script>
 
-<meta name="robots" content="NONE,NOARCHIVE" />
-<style>
-  /* Additional styles for iframe and layout */
-  .main-content {
-    display: flex;
-    align-items: stretch;
-    height: calc(100vh - 100px); /* Adjust based on header/footer height */
-  }
-  .iframe-container {
-    flex: 1;
-    margin-right: 20px; /* Space between iframe and video */
-  }
-  .videocontainer {
-    flex: 3;
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-  }
-</style>
+    // Function to populate the Vitals Dashboard with the image
+    function populateVitals() {
+        // Set the GIF as the source for the vitals image
+        document.getElementById("vitals-image").src = "img/vitals.gif";
+    }
+    
+    // Function to update the Vitals Dashboard image (if needed)
+    function updateVitals() {
+        // Update the image (or any other details if necessary)
+        document.getElementById("vitals-image").src = "img/vitals.gif"; // Same GIF or a new one if needed
+    }
+    </script>
+
+    <meta name="robots" content="NONE,NOARCHIVE" />
+    <style>
+    #vitals-container {
+        display: none; /* Hide initially */
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 5.5in; /* Set width to 4 inches */
+        height: 100%; /* Full height */
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border-right: 2px solid #0eb3c7; /* Match border color */
+        padding: 10px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        overflow: hidden; /* Ensure no overflow */
+    }
+    
+    #vitals-container h2 {
+        color: #0eb3c7; /* Heading color */
+    }
+    
+    #vitals-container img {
+        width: 5.5in; /* Set image width to 4 inches */
+        height: 8in; /* Set image height to 3 inches */
+        display: block; /* Remove any extra space below the image */
+        margin-top: 10px; /* Space above the image */
+    }
+            
+    #last-measurements-container {
+        display: none; /* Hide initially */
+        width: 100%;
+        margin-left: 2in;
+        margin-top: 20px; /* Space between vitals and last measurements */
+        padding: 10px;
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border: 1px solid #0eb3c7; /* Border color */
+        border-radius: 5px; /* Rounded corners */
+    }
+
+    #last-measurements-container h2 {
+        color: #0eb3c7; /* Heading color */
+    }
+
+    #last-measurements-container p {
+        margin: 10px 0;
+    }
+
+    #last-measurements-container img {
+        width: 100%;
+        height: auto;
+        margin-top: 10px;
+    }
+
+    .button {
+        display: inline-block;
+        background-color: #0eb3c7;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    .button:hover {
+        background-color: #0a8a9c;
+    }
+
+    #iframe-container {
+        width: 100%;
+        height: 400px; /* Adjust as needed */
+        overflow: hidden;
+    }
+    </style>
 </head>
 
 <body class="home">
-
 <!-- Container -->
 <div id="container" class="site">
     <!-- Header -->
     <header id="header" class="branding" role="banner">
-        
-       <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
-       <!-- <h1>Connect</h1> -->
-        
+        <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
+        <!-- <h1>Connect</h1> -->
     </header>
     <!-- END Header -->
 
-    <!-- Content -->
-    <div id="selectrole" class="main site join hidden">
-    <h2>Select your role for this conference:</h2>
-    <form>
-        <div class="cf">
-            <input type="radio" value="1" name="role" id="id_guest" class="webrtcinput" checked>
-            <label for="id_guest">Guest</label>
-        </div>
-        <div class="cf">
-            <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
-            <label for="id_host">Host</label>
-        </div>
-
-        <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
-    </form>
-  </div>
-
-  <div id="pinentry" class="main site join hidden">
-    <form onSubmit="return submitPinEntry();">
-        <label for="id_pin" class="vh">Enter the conference PIN</label>
-        <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
-
-        <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
-    </form>
-  </div>
-
-  <div id="ivrentry" class="main site join hidden">
-    <form onSubmit="return submitIVREntry();">
-        <label for="id_room" class="vh">Enter the target extension</label>
-        <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
-
-        <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
-    </form>
-  </div>
-
-  <div id="maincontent" class="main-content hidden">
-    <aside id="iframe-container" class="iframe-container">
-      <!-- Iframe will be inserted here by JavaScript -->
-    </aside>
-    <div class="videocontainer">
-      <section class="top">
-        <aside class="participants"><!-- List of participants -->
-          <h2 id="rosterheading">Participants</h2>
-          <div id="rosterlist" class="rosterlist">
-            <ul id="rosterul">
-            </ul>
-          </div>
-          <div id="selfview" class="selfview" hidden>
-            <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true">
-            </video>
-          </div>
-        </aside>
-        <div id="videocontainer" class="videocontainer">
-          <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
-        </div>
-      </section>
-
-      <footer id="controls" class="controls cf">
-        <ul>
-          <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
-          <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
-          <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
-          <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
-          <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
-          <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
-          <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
-        </ul>
-      </footer>
+    <div id="vitals-container">
+        <h2>Vitals Dashboard</h2>
+        <!-- Image to display the GIF -->
+        <img id="vitals-image" src="img/vitals.gif" alt="Vitals Dashboard" />
+        <button class="button" onclick="updateVitals()">Take New Measurement</button>
     </div>
-  </div>
 
-    <!-- END Content -->
+    <!-- New Section for Last Measurements -->
+    <div id="last-measurements-container">
+        <h2>Last Measurements</h2>
+        <p>Last Weight: <span id="weight-last">N/A</span></p>
+        <p>Last Height: <span id="height-last">N/A</span></p>
+    </div>
 
-    <div id="footer"> </div>
+    <!-- Section for iframe -->
+    <div id="iframe-container"></div>
+
+    <div id="selectrole" class="main site join hidden">
+        <h2>Select your role for this conference:</h2>
+        <form>
+            <div class="cf">
+                <input type="radio" value="1" name="role" id="id_guest" class="webrtcinput" checked>
+                <label for="id_guest">Guest</label>
+            </div>
+            <div class="cf">
+                <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
+                <label for="id_host">Host</label>
+            </div>
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
+        </form>
+    </div>
+
+    <div id="pinentry" class="main site join hidden">
+        <form onSubmit="return submitPinEntry();">
+            <label for="id_pin" class="vh">Enter the conference PIN</label>
+            <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
+        </form>
+    </div>
+
+    <div id="ivrentry" class="main site join hidden">
+        <form onSubmit="return submitIVREntry();">
+            <label for="id_room" class="vh">Enter the target extension</label>
+            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
+        </form>
+    </div>
+
+    <div id="maincontent" class="main cf hidden">
+        <section class="top">
+            <aside class="participants">
+                <h2 id="rosterheading">Participants</h2>
+                <div id="rosterlist" class="roster"></div>
+            </aside>
+
+            <div class="video">
+                <div class="videowrapper">
+                    <video id="video" class="video" autoplay muted></video>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer id="footer" class="site">
+        <p>Copyright &copy; 2024</p>
+    </footer>
 </div>
-<!-- END Container -->
-
 </body>
 </html>
