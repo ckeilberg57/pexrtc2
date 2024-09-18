@@ -1,7 +1,6 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
 <title>] Pexip Health[</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
@@ -28,6 +27,51 @@ window.onload = function()
 
     //pin, source
     initialise("pex-gcc.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+
+    // Call the function to add the iframe
+    addHealthFormIframe();
+}
+
+function addHealthFormIframe() {
+    // Create the iframe element
+    var iframe = document.createElement('iframe');
+    iframe.style.width = "100%";
+    iframe.style.height = "400px";
+    iframe.style.border = "1px solid #ccc";
+    iframe.srcdoc = `
+        <html>
+        <head>
+            <style>
+                body { font-family: Arial, sans-serif; }
+                form { padding: 20px; }
+                label { display: block; margin-bottom: 10px; }
+                input { padding: 5px; width: 200px; margin-bottom: 20px; }
+                button { padding: 10px 20px; background-color: #0eb3c7; color: white; border: none; cursor: pointer; }
+            </style>
+        </head>
+        <body>
+            <form>
+                <label for="heartrate">Current Heart Rate (bpm):</label>
+                <input type="number" id="heartrate" name="heartrate" required />
+
+                <label for="o2level">Current O2 Level (%):</label>
+                <input type="number" id="o2level" name="o2level" required />
+
+                <label for="systolic">Systolic Blood Pressure (mmHg):</label>
+                <input type="number" id="systolic" name="systolic" required />
+
+                <label for="diastolic">Diastolic Blood Pressure (mmHg):</label>
+                <input type="number" id="diastolic" name="diastolic" required />
+
+                <button type="submit">Submit</button>
+            </form>
+        </body>
+        </html>
+    `;
+
+    // Append the iframe to the main content area
+    var mainContent = document.getElementById('maincontent');
+    mainContent.insertAdjacentElement('afterend', iframe);
 }
 </script>
 
@@ -65,7 +109,6 @@ window.onload = function()
     </form>
   </div>
 
-
   <div id="pinentry" class="main site join hidden">
     <form onSubmit="return submitPinEntry();">
         <label for="id_pin" class="vh">Enter the conference PIN</label>
@@ -74,7 +117,6 @@ window.onload = function()
         <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
     </form>
   </div>
-
 
   <div id="ivrentry" class="main site join hidden">
     <form onSubmit="return submitIVREntry();">
@@ -85,14 +127,12 @@ window.onload = function()
     </form>
   </div>
 
- 
   <div id="maincontent" class="main cf hidden">
     <section class="top">
-      <aside class="participants"><!-- List of participants -->
+      <aside class="participants">
         <h2 id="rosterheading">Participants</h2>
         <div id="rosterlist" class="rosterlist">
-          <ul id="rosterul">
-          </ul>
+          <ul id="rosterul"></ul>
         </div>
         <div id="selfview" class="selfview" hidden>
           <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true">
