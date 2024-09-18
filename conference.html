@@ -7,101 +7,96 @@
     <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
     <script type="text/javascript" src="webui.js"></script>
     <script type='text/javascript'>
-    window.onload = function() {
-        var url = window.location.href;
-        var params = url.substr(url.indexOf("?")+1).split("&");
-        var i;
-        var qp = {};
-        for (i=0;i<params.length;i++) {
-            var kv = params[i].split("=");
-            qp[kv[0]] = kv[1];
-        }
+        var qp = {};  // query params
+        
+        window.onload = function() {
+            var url = window.location.href;
+            var params = url.substr(url.indexOf("?") + 1).split("&");
+            for (var i = 0; i < params.length; i++) {
+                var kv = params[i].split("=");
+                qp[kv[0]] = kv[1];
+            }
+            console.log(qp);
+        };
 
-        // Determine if the user should select a role
-        if (!qp['role']) {
-            document.getElementById("selectrole").classList.remove("hidden");
-        }
-
-        console.log(qp);
-
-        var source = "";
-        if ("join_pres" in qp) {
-            source = "screen";
-        }
-
-        if (qp['role']) {
-            if (qp['role'] === "host") {
-                document.getElementById("pinentry").classList.remove("hidden");
+        function submitSelectRole() {
+            var role = document.querySelector('input[name="role"]:checked').value;
+            if (role == "2") {  // Host selected
+                document.getElementById("pinentry").style.display = "block";
+                document.getElementById("selectrole").style.display = "none";
             } else {
-                initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
-                checkVideoStream();
+                initialiseConference();  // Guest role, join directly
             }
         }
-    }
 
-    function submitSelectRole() {
-        var role = document.querySelector('input[name="role"]:checked').value;
-        var alias = ""; // You can pass alias from URL params here if needed
-        var bandwidth = ""; // Add bandwidth if necessary
-        var name = ""; // Add name if required
-        
-        if (role === "2") { // Host selected
-            document.getElementById("selectrole").classList.add("hidden");
-            document.getElementById("pinentry").classList.remove("hidden");
-        } else { // Guest selected
-            initialise("cklab-edges.ck-collab-engtest.com", alias, bandwidth, name, "", ""); // Initialize guest
-            document.getElementById("selectrole").classList.add("hidden");
+        function submitPinEntry() {
+            var pin = document.getElementById("id_pin").value;
+            qp['pin'] = pin;
+            initialiseConference();  // Join after PIN is entered
+        }
+
+        function initialiseConference() {
+            var source = ("join_pres" in qp) ? "screen" : "";
+            initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], qp['pin'], source);
+
+            // Show the main content, hide role/PIN entry
+            document.getElementById("maincontent").style.display = "block";
+            document.getElementById("selectrole").style.display = "none";
+            document.getElementById("pinentry").style.display = "none";
+
+            // Start video/audio
             checkVideoStream();
         }
-    }
 
-    function submitPinEntry() {
-        var pin = document.getElementById('id_pin').value;
-        var alias = ""; // Same alias logic if needed
-        var bandwidth = ""; // Bandwidth if necessary
-        var name = ""; // Add name if required
-        
-        initialise("cklab-edges.ck-collab-engtest.com", alias, bandwidth, name, pin, ""); // Initialize host with PIN
-        document.getElementById("pinentry").classList.add("hidden");
-        checkVideoStream();
-        return false;
-    }
+        function checkVideoStream() {
+            var videoElement = document.getElementById("video");
+            var interval = setInterval(function() {
+                if (videoElement.srcObject && videoElement.srcObject.active) {
+                    clearInterval(interval);
+                    document.getElementById("vitals-container").style.display = "block";
+                    populateVitals();
+                    document.getElementById("last-measurements-container").style.display = "block";
+                    populateLastMeasurements();
+                }
+            }, 500); // Check every 500ms
+        }
 
-    function checkVideoStream() {
-        var videoElement = document.getElementById("video");
-        var interval = setInterval(function() {
-            if (videoElement.srcObject && videoElement.srcObject.active) {
-                clearInterval(interval);
-                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
-                populateVitals();
-                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
-                populateLastMeasurements(); // Populate last measurements
-            }
-        }, 500); // Check every 500ms
-    }
+        function populateVitals() {
+            document.getElementById("vitals-image").src = "img/vitals.gif";
+        }
 
-    function populateVitals() {
-        document.getElementById("vitals-image").src = "img/vitals.gif";
-    }
-
-    function updateVitals() {
-        document.getElementById("vitals-image").src = "img/vitals.gif";
-    }
+        function updateVitals() {
+            document.getElementById("vitals-image").src = "img/vitals.gif";
+        }
     </script>
 
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
-    /* Styles omitted for brevity, you can retain your original styles */
+        /* Same styles as before, no change here */
     </style>
 </head>
 
 <body class="home">
 <!-- Container -->
 <div id="container" class="site">
-    <!-- Vitals and Last Measurements sections omitted for brevity -->
-    
-    <!-- Role Selection -->
-    <div id="selectrole" class="main site join hidden">
+    <!-- Header -->
+    <header id="header" class="branding" role="banner">
+    </header>
+
+    <div id="vitals-container">
+        <h2>Vitals Dashboard</h2>
+        <img id="vitals-image" src="img/vitals.gif" alt="Vitals Dashboard" />
+        <button class="button" onclick="updateVitals()">Take New Measurement</button>
+    </div>
+
+    <div id="last-measurements-container">
+        <h2>Last Measurements</h2>
+        <p>Last Weight: <span id="weight-last">N/A</span></p>
+        <p>Last Height: <span id="height-last">N/A</span></p>
+    </div>
+
+    <!-- Role selection section -->
+    <div id="selectrole" class="main site join">
         <h2>Select your role for this conference:</h2>
         <form>
             <div class="cf">
@@ -116,17 +111,46 @@
         </form>
     </div>
 
-    <!-- PIN Entry for Host -->
+    <!-- PIN entry section (hidden by default) -->
     <div id="pinentry" class="main site join hidden">
-        <form onSubmit="return submitPinEntry();">
+        <form onSubmit="return false;">
             <label for="id_pin" class="vh">Enter the conference PIN</label>
             <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
             <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
         </form>
     </div>
 
-    <!-- IVR and Video sections omitted for brevity -->
+    <!-- Main content for video and controls -->
+    <div id="maincontent" class="main cf hidden">
+        <section class="top">
+            <aside class="participants">
+                <h2 id="rosterheading">Participants</h2>
+                <div id="rosterlist" class="rosterlist">
+                    <ul id="rosterul"></ul>
+                </div>
+                <div id="selfview" class="selfview" hidden>
+                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
+                </div>
+            </aside>
+            <div id="videocontainer" class="videocontainer">
+                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
+            </div>
+        </section>
 
+        <footer id="controls" class="controls cf">
+            <ul>
+                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+                <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
+                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+                <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
+                <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
+            </ul>
+        </footer>
+    </div>
+
+    <!-- Embed an iFrame (can be styled/positioned as needed) -->
+    <iframe id="conference-iframe" src="https://cklab-edges.ck-collab-engtest.com/webapp3/m/?conference=apptmd12345" 
+        style="width:100%; height:500px; border:none;"></iframe>
 </div>
 <!-- END Container -->
 
