@@ -1,5 +1,4 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
 <title>] Pexip Health[</title>
@@ -7,9 +6,31 @@
 <meta name="robots" content="noindex, nofollow" />
 <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
 <script type="text/javascript" src="webui.js"></script>
+<style>
+  #health-form-iframe {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 5in;
+    height: 300px;
+    background-color: #333;
+    color: white;
+    display: none; /* Initially hidden */
+    border: none;
+    z-index: 1000;
+  }
+
+  /* Style for iframe content */
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: #0a2136;
+    color: white;
+  }
+</style>
 <script type='text/javascript'>
-window.onload = function()
-{
+window.onload = function() {
     var url = window.location.href;
     var params = url.substr(url.indexOf("?")+1).split("&");
     var i;
@@ -28,53 +49,17 @@ window.onload = function()
     //pin, source
     initialise("pex-gcc.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
 
-    // Call the function to add the iframe
-    addHealthFormIframe();
-}
-
-function addHealthFormIframe() {
-    // Create the iframe element
-    var iframe = document.createElement('iframe');
-    iframe.style.width = "100%";
-    iframe.style.height = "400px";
-    iframe.style.border = "1px solid #ccc";
-    iframe.srcdoc = `
-        <html>
-        <head>
-            <style>
-                body { font-family: Arial, sans-serif; }
-                form { padding: 20px; }
-                label { display: block; margin-bottom: 10px; }
-                input { padding: 5px; width: 200px; margin-bottom: 20px; }
-                button { padding: 10px 20px; background-color: #0eb3c7; color: white; border: none; cursor: pointer; }
-            </style>
-        </head>
-        <body>
-            <form>
-                <label for="heartrate">Current Heart Rate (bpm):</label>
-                <input type="number" id="heartrate" name="heartrate" required />
-
-                <label for="o2level">Current O2 Level (%):</label>
-                <input type="number" id="o2level" name="o2level" required />
-
-                <label for="systolic">Systolic Blood Pressure (mmHg):</label>
-                <input type="number" id="systolic" name="systolic" required />
-
-                <label for="diastolic">Diastolic Blood Pressure (mmHg):</label>
-                <input type="number" id="diastolic" name="diastolic" required />
-
-                <button type="submit">Submit</button>
-            </form>
-        </body>
-        </html>
-    `;
-
-    // Append the iframe to the main content area
-    var mainContent = document.getElementById('maincontent');
-    mainContent.insertAdjacentElement('afterend', iframe);
-}
+    // Check if videocontainer is loaded
+    var checkVideoContainer = setInterval(function() {
+        var videoContainer = document.getElementById("videocontainer");
+        if (videoContainer) {
+            // Show iframe when videocontainer is present
+            document.getElementById("health-form-iframe").style.display = 'block';
+            clearInterval(checkVideoContainer);
+        }
+    }, 500); // Check every 500ms
+};
 </script>
-
 <meta name="robots" content="NONE,NOARCHIVE" />
 </head>
 
@@ -84,81 +69,95 @@ function addHealthFormIframe() {
 <div id="container" class="site">
     <!-- Header -->
     <header id="header" class="branding" role="banner">
-        
        <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
        <!-- <h1>Connect</h1> -->
-        
     </header>
     <!-- END Header -->
 
     <!-- Content -->
+    <div id="selectrole" class="main site join hidden">
+        <h2>Select your role for this conference:</h2>
+        <form>
+            <div class="cf">
+                <input type="radio" value="1" name="role" id="id_guest" class="webrtcinput" checked>
+                <label for="id_guest">Guest</label>
+            </div>
+            <div class="cf">
+                <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
+                <label for="id_host">Host</label>
+            </div>
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
+        </form>
+    </div>
 
-  <div id="selectrole" class="main site join hidden">
-    <h2>Select your role for this conference:</h2>
-    <form>
-        <div class="cf">
-            <input type="radio" value="1" name="role" id="id_guest" class="webrtcinput" checked>
-            <label for="id_guest">Guest</label>
-        </div>
-        <div class="cf">
-            <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
-            <label for="id_host">Host</label>
-        </div>
+    <div id="pinentry" class="main site join hidden">
+        <form onSubmit="return submitPinEntry();">
+            <label for="id_pin" class="vh">Enter the conference PIN</label>
+            <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
+        </form>
+    </div>
 
-        <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
-    </form>
-  </div>
+    <div id="ivrentry" class="main site join hidden">
+        <form onSubmit="return submitIVREntry();">
+            <label for="id_room" class="vh">Enter the target extension</label>
+            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
+        </form>
+    </div>
 
-  <div id="pinentry" class="main site join hidden">
-    <form onSubmit="return submitPinEntry();">
-        <label for="id_pin" class="vh">Enter the conference PIN</label>
-        <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
+    <div id="maincontent" class="main cf hidden">
+        <section class="top">
+            <aside class="participants">
+                <h2 id="rosterheading">Participants</h2>
+                <div id="rosterlist" class="rosterlist">
+                    <ul id="rosterul"></ul>
+                </div>
+                <div id="selfview" class="selfview" hidden>
+                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
+                </div>
+            </aside>
+            <div id="videocontainer" class="videocontainer">
+                <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
+            </div>
+        </section>
 
-        <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
-    </form>
-  </div>
+        <footer id="controls" class="controls cf">
+            <ul>
+                <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
+                <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
+                <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
+                <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
+                <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
+                <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
+                <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
+            </ul>
+        </footer>
+    </div>
 
-  <div id="ivrentry" class="main site join hidden">
-    <form onSubmit="return submitIVREntry();">
-        <label for="id_room" class="vh">Enter the target extension</label>
-        <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
+    <!-- Add the iframe here, initially hidden -->
+    <iframe id="health-form-iframe">
+      <html>
+        <body style="color: white; background-color: #0a2136;">
+          <h2>Enter Your Current Health Data</h2>
+          <form>
+            <label>Current Heart Rate:</label><br>
+            <input type="text" name="heart-rate" style="width: 100%;"><br><br>
 
-        <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
-    </form>
-  </div>
+            <label>Current O2 Level:</label><br>
+            <input type="text" name="oxygen-level" style="width: 100%;"><br><br>
 
-  <div id="maincontent" class="main cf hidden">
-    <section class="top">
-      <aside class="participants">
-        <h2 id="rosterheading">Participants</h2>
-        <div id="rosterlist" class="rosterlist">
-          <ul id="rosterul"></ul>
-        </div>
-        <div id="selfview" class="selfview" hidden>
-          <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true">
-          </video>
-        </div>
-      </aside>
-      <div id="videocontainer" class="videocontainer">
-        <video width="100%" height="100%" id="video" autoplay="autoplay" playsinline="playsinline" poster="img/spinner-genesys3.gif"></video>
-      </div>
-    </section>
+            <label>Blood Pressure (Systolic/Diastolic):</label><br>
+            <input type="text" name="blood-pressure-systolic" placeholder="Systolic" style="width: 48%;">
+            <input type="text" name="blood-pressure-diastolic" placeholder="Diastolic" style="width: 48%;"><br><br>
 
-    <footer id="controls" class="controls cf">
-      <ul>
-        <li><a id="id_selfview" class="webrtcbutton btn-selfview" onclick="toggleSelfview();">Show Selfview</a></li>
-        <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
-        <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
-        <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
-        <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
-        <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
-        <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
-      </ul>
-    </footer>
-  </div>
+            <input type="submit" value="Submit">
+          </form>
+        </body>
+      </html>
+    </iframe>
 
     <!-- END Content -->
-
     <div id="footer"> </div>
 </div>
 <!-- END Container -->
