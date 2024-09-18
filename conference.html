@@ -7,72 +7,63 @@
     <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
     <script type="text/javascript" src="webui.js"></script>
     <script type='text/javascript'>
-        var qp = {};  // query params
-        
-        window.onload = function() {
-            var url = window.location.href;
-            var params = url.substr(url.indexOf("?") + 1).split("&");
-            for (var i = 0; i < params.length; i++) {
-                var kv = params[i].split("=");
-                qp[kv[0]] = kv[1];
+    window.onload = function() {
+        var url = window.location.href;
+        var params = url.substr(url.indexOf("?")+1).split("&");
+        var i;
+        var qp = {};
+        for (i=0;i<params.length;i++) {
+            var kv = params[i].split("=");
+            qp[kv[0]] = kv[1];
+        }
+        console.log(qp);
+
+        var source = "";
+        if ("join_pres" in qp) {
+            source = "screen";
+        }
+
+        // Initialize with the provided parameters
+        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+
+        // Check if the video stream is active
+        checkVideoStream();
+    }
+
+    function checkVideoStream() {
+        var videoElement = document.getElementById("video");
+        var interval = setInterval(function() {
+            if (videoElement.srcObject && videoElement.srcObject.active) {
+                clearInterval(interval);
+                document.getElementById("iframe-container").style.display = "block"; // Show the iframe section
             }
-            console.log(qp);
-        };
-
-        function submitSelectRole() {
-            var role = document.querySelector('input[name="role"]:checked').value;
-            if (role == "2") {  // Host selected
-                document.getElementById("pinentry").style.display = "block";
-                document.getElementById("selectrole").style.display = "none";
-            } else {
-                initialiseConference();  // Guest role, join directly
-            }
-        }
-
-        function submitPinEntry() {
-            var pin = document.getElementById("id_pin").value;
-            qp['pin'] = pin;
-            initialiseConference();  // Join after PIN is entered
-        }
-
-        function initialiseConference() {
-            var source = ("join_pres" in qp) ? "screen" : "";
-            initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], qp['pin'], source);
-
-            // Show the main content, hide role/PIN entry
-            document.getElementById("maincontent").style.display = "block";
-            document.getElementById("selectrole").style.display = "none";
-            document.getElementById("pinentry").style.display = "none";
-
-            // Start video/audio
-            checkVideoStream();
-        }
-
-        function checkVideoStream() {
-            var videoElement = document.getElementById("video");
-            var interval = setInterval(function() {
-                if (videoElement.srcObject && videoElement.srcObject.active) {
-                    clearInterval(interval);
-                    document.getElementById("vitals-container").style.display = "block";
-                    populateVitals();
-                    document.getElementById("last-measurements-container").style.display = "block";
-                    populateLastMeasurements();
-                }
-            }, 500); // Check every 500ms
-        }
-
-        function populateVitals() {
-            document.getElementById("vitals-image").src = "img/vitals.gif";
-        }
-
-        function updateVitals() {
-            document.getElementById("vitals-image").src = "img/vitals.gif";
-        }
+        }, 500); // Check every 500ms
+    }
     </script>
 
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
-        /* Same styles as before, no change here */
+    #iframe-container {
+        display: none; /* Hide initially */
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 5.5in; /* Adjust the width */
+        height: 100%; /* Full height */
+        background: #0a2136; /* Match background color */
+        color: white; /* Text color */
+        border-right: 2px solid #0eb3c7; /* Border color */
+        padding: 10px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    #iframe-container iframe {
+        width: 100%; /* Adjust iframe width */
+        height: 100%; /* Adjust iframe height */
+        border: none; /* Remove border */
+    }
+
     </style>
 </head>
 
@@ -81,22 +72,16 @@
 <div id="container" class="site">
     <!-- Header -->
     <header id="header" class="branding" role="banner">
+        <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
     </header>
-
-    <div id="vitals-container">
-        <h2>Vitals Dashboard</h2>
-        <img id="vitals-image" src="img/vitals.gif" alt="Vitals Dashboard" />
-        <button class="button" onclick="updateVitals()">Take New Measurement</button>
+    <!-- END Header -->
+    
+    <!-- Replace the vitals section with iframe -->
+    <div id="iframe-container">
+        <iframe src="https://example.com" title="Webpage Display"></iframe> <!-- Replace with your desired URL -->
     </div>
 
-    <div id="last-measurements-container">
-        <h2>Last Measurements</h2>
-        <p>Last Weight: <span id="weight-last">N/A</span></p>
-        <p>Last Height: <span id="height-last">N/A</span></p>
-    </div>
-
-    <!-- Role selection section -->
-    <div id="selectrole" class="main site join">
+    <div id="selectrole" class="main site join hidden">
         <h2>Select your role for this conference:</h2>
         <form>
             <div class="cf">
@@ -111,16 +96,22 @@
         </form>
     </div>
 
-    <!-- PIN entry section (hidden by default) -->
     <div id="pinentry" class="main site join hidden">
-        <form onSubmit="return false;">
+        <form onSubmit="return submitPinEntry();">
             <label for="id_pin" class="vh">Enter the conference PIN</label>
             <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
             <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
         </form>
     </div>
 
-    <!-- Main content for video and controls -->
+    <div id="ivrentry" class="main site join hidden">
+        <form onSubmit="return submitIVREntry();">
+            <label for="id_room" class="vh">Enter the target extension</label>
+            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
+        </form>
+    </div>
+
     <div id="maincontent" class="main cf hidden">
         <section class="top">
             <aside class="participants">
@@ -143,14 +134,15 @@
                 <li><a id="id_muteaudio" class="webrtcbutton btn-audio" onclick="muteAudioStreams();">Mute Audio</a></li>
                 <li><a id="id_mutevideo" class="webrtcbutton btn-video" onclick="muteVideoStreams();">Mute Video</a></li>
                 <li><a id="id_fullscreen" class="webrtcbutton btn-fullscreen inactive" onclick="goFullscreen();">Fullscreen</a></li>
+                <li><a id="id_screenshare" class="webrtcbutton btn-presentscreen inactive" onclick="presentScreen();">Present Screen</a></li>
+                <li><a id="id_presentation" class="webrtcbutton btn-presentation inactive" onclick="togglePresentation();">No Presentation Active</a></li>
                 <li><a id="id_disconnect" class="webrtcbutton btn-disconnect" onclick="window.location='index.html';">Disconnect</a></li>
             </ul>
         </footer>
     </div>
+    <!-- END Content -->
 
-    <!-- Embed an iFrame (can be styled/positioned as needed) -->
-    <iframe id="conference-iframe" src="https://cklab-edges.ck-collab-engtest.com/webapp3/m/?conference=apptmd12345" 
-        style="width:100%; height:500px; border:none;"></iframe>
+    <div id="footer"> </div>
 </div>
 <!-- END Container -->
 
