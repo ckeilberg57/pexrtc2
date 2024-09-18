@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us" >
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
 <title>] Pexip Health[</title>
 <link rel="stylesheet" type="text/css" href="style.css" />
@@ -8,8 +8,7 @@
 <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
 <script type="text/javascript" src="webui.js"></script>
 <script type='text/javascript'>
-window.onload = function()
-{
+window.onload = function() {
     var url = window.location.href;
     var params = url.substr(url.indexOf("?")+1).split("&");
     var i;
@@ -27,6 +26,24 @@ window.onload = function()
 
     //pin, source
     initialise("pex-gcc.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+
+    // Call the function to load the iframe after conference starts
+    onConferenceStarted();
+}
+
+function onConferenceStarted() {
+    // Assuming `startConference` function is called when the conference actually starts
+    // You may need to modify this function based on your actual implementation
+    var iframeContainer = document.getElementById('iframe-container');
+    if (iframeContainer) {
+        var iframe = document.createElement('iframe');
+        iframe.src = 'your-iframe-source-url'; // Replace with your iframe URL
+        iframe.title = 'Information';
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        iframeContainer.appendChild(iframe);
+    }
 }
 </script>
 
@@ -105,8 +122,8 @@ window.onload = function()
   </div>
 
   <div id="maincontent" class="main-content hidden">
-    <aside class="iframe-container">
-      <iframe src="your-iframe-source-url" title="Information" id="infoIframe"></iframe>
+    <aside id="iframe-container" class="iframe-container">
+      <!-- Iframe will be inserted here by JavaScript -->
     </aside>
     <div class="videocontainer">
       <section class="top">
