@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
 <head>
     <title>Pexip Health</title>
@@ -23,64 +23,75 @@
             source = "screen";
         }
 
-        // Initialize with the provided parameters
-        initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+        // Show the role selection form
+        document.getElementById("selectrole").style.display = "block";
 
-        // Check if the video stream is active
-        checkVideoStream();
-    }
-
-    function checkVideoStream() {
-        var videoElement = document.getElementById("video");
-        var interval = setInterval(function() {
-            if (videoElement.srcObject && videoElement.srcObject.active) {
-                clearInterval(interval);
-                document.getElementById("iframe-container").style.display = "block"; // Show the iframe section
+        // Handle form submission
+        document.getElementById("id_join").onclick = function() {
+            var selectedRole = document.querySelector('input[name="role"]:checked').value;
+            if (selectedRole === "2") { // Host selected
+                document.getElementById("selectrole").style.display = "none";
+                document.getElementById("pinentry").style.display = "block";
+            } else {
+                // Proceed to conference directly if Guest
+                initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+                document.getElementById("maincontent").style.display = "block";
+                checkVideoStream();
             }
-        }, 500); // Check every 500ms
+        };
+
+        function submitPinEntry() {
+            var pin = document.getElementById("id_pin").value;
+            if (pin) {
+                // Proceed with PIN validation and conference initialization
+                initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+                document.getElementById("pinentry").style.display = "none";
+                document.getElementById("maincontent").style.display = "block";
+                checkVideoStream();
+            }
+            return false;
+        }
+
+        // Handle PIN entry form submission
+        document.getElementById("id_join").onclick = submitPinEntry;
+
+        function submitIVREntry() {
+            // Handle IVR entry (if needed)
+            return false;
+        }
+
+        // Initialize video and other settings
+        function initialise(host, alias, bandwidth, name, other, source) {
+            // Existing initialization logic
+            console.log('Initializing with', host, alias, bandwidth, name, other, source);
+        }
+
+        function checkVideoStream() {
+            var videoElement = document.getElementById("video");
+            var interval = setInterval(function() {
+                if (videoElement.srcObject && videoElement.srcObject.active) {
+                    clearInterval(interval);
+                    document.getElementById("maincontent").style.display = "block";
+                    checkVideoStream();
+                }
+            }, 500);
+        }
     }
     </script>
 
     <meta name="robots" content="NONE,NOARCHIVE" />
     <style>
-    #iframe-container {
-        display: none; /* Hide initially */
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 5.5in; /* Adjust the width */
-        height: 100%; /* Full height */
-        background: #0a2136; /* Match background color */
-        color: white; /* Text color */
-        border-right: 2px solid #0eb3c7; /* Border color */
-        padding: 10px;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-    
-    #iframe-container iframe {
-        width: 100%; /* Adjust iframe width */
-        height: 100%; /* Adjust iframe height */
-        border: none; /* Remove border */
-    }
-
+    /* Your existing styles here */
     </style>
 </head>
-
 <body class="home">
 <!-- Container -->
 <div id="container" class="site">
     <!-- Header -->
     <header id="header" class="branding" role="banner">
-        <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
     </header>
     <!-- END Header -->
     
-    <!-- Replace the vitals section with iframe -->
-    <div id="iframe-container">
-        <iframe src="https://example.com" title="Webpage Display"></iframe> <!-- Replace with your desired URL -->
-    </div>
-
     <div id="selectrole" class="main site join hidden">
         <h2>Select your role for this conference:</h2>
         <form>
@@ -92,7 +103,7 @@
                 <input type="radio" value="2" name="role" id="id_host" class="webrtcinput">
                 <label for="id_host">Host</label>
             </div>
-            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitSelectRole();">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
         </form>
     </div>
 
@@ -100,15 +111,7 @@
         <form onSubmit="return submitPinEntry();">
             <label for="id_pin" class="vh">Enter the conference PIN</label>
             <input type="password" value="" name="pin" id="id_pin" placeholder="Enter the conference PIN" required class="webrtcinput">
-            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitPinEntry();">
-        </form>
-    </div>
-
-    <div id="ivrentry" class="main site join hidden">
-        <form onSubmit="return submitIVREntry();">
-            <label for="id_room" class="vh">Enter the target extension</label>
-            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
-            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
+            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
         </form>
     </div>
 
