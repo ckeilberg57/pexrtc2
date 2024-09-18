@@ -25,35 +25,59 @@
 
         // Initialize with the provided parameters
         initialise("cklab-edges.ck-collab-engtest.com", qp['alias'], qp['bandwidth'], qp['name'], "", source);
+
+        // Check if the video stream is active
+        checkVideoStream();
     }
 
-    function startConference() {
-        // Show iframe only after conference is started
-        document.getElementById("iframe-container").style.display = "block";
+    function checkVideoStream() {
+        var videoElement = document.getElementById("video");
+        var interval = setInterval(function() {
+            if (videoElement.srcObject && videoElement.srcObject.active) {
+                clearInterval(interval);
+                document.getElementById("vitals-container").style.display = "block"; // Show the vitals dashboard
+                populateVitals();
+                document.getElementById("last-measurements-container").style.display = "block"; // Show the last measurements
+                populateLastMeasurements(); // Populate last measurements
+            }
+        }, 500); // Check every 500ms
+    }
+
+    // Function to populate the Vitals Dashboard with the image
+    function populateVitals() {
+        document.getElementById("vitals-image").src = "img/vitals.gif";
+    }
+    
+    // Function to update the Vitals Dashboard image (if needed)
+    function updateVitals() {
+        document.getElementById("vitals-image").src = "img/vitals.gif"; // Same GIF or a new one if needed
     }
 
     function submitSelectRole() {
         var role = document.querySelector('input[name="role"]:checked').value;
         if (role === "2") { // Host
-            document.getElementById("pinentry").style.display = "block";
-            document.getElementById("selectrole").style.display = "none";
+            document.getElementById("selectrole").classList.add("hidden");
+            document.getElementById("pinentry").classList.remove("hidden");
         } else {
-            startConference();
+            startConference(); // If role is "Guest"
         }
     }
 
     function submitPinEntry() {
         var pin = document.getElementById("id_pin").value;
         if (pin) {
-            // Start the conference after entering the PIN
-            startConference();
+            startConference(); // Start conference with PIN
         }
         return false; // Prevent form submission
     }
 
-    function submitIVREntry() {
-        // Handle IVR entry here, if applicable
-        return false; // Prevent form submission
+    function startConference() {
+        var iframe = document.getElementById("conference-iframe");
+        var pin = encodeURIComponent(document.getElementById("id_pin").value);
+        var url = "https://cklab-edges.ck-collab-engtest.com/webapp3/m/?conference=apptmd<randomID>&name=<provider name selected>&pin=" + pin + "&role=host&callType=video&join=1";
+        iframe.src = url;
+        iframe.style.display = "block"; // Show the iframe
+        document.getElementById("maincontent").classList.remove("hidden"); // Show main content
     }
     </script>
 
@@ -64,7 +88,7 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: 5.5in; /* Set width to 4 inches */
+        width: 5.5in; /* Set width to 5.5 inches */
         height: 100%; /* Full height */
         background: #0a2136; /* Match background color */
         color: white; /* Text color */
@@ -73,22 +97,22 @@
         box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         overflow: hidden; /* Ensure no overflow */
     }
-
+    
     #vitals-container h2 {
         color: #0eb3c7; /* Heading color */
     }
-
+    
     #vitals-container img {
-        width: 5.5in; /* Set image width to 4 inches */
-        height: 8in; /* Set image height to 3 inches */
+        width: 5.5in; /* Set image width to 5.5 inches */
+        height: 8in; /* Set image height to 8 inches */
         display: block; /* Remove any extra space below the image */
         margin-top: 10px; /* Space above the image */
     }
-
+            
     #last-measurements-container {
         display: none; /* Hide initially */
         width: 100%;
-        margin-left: 2in;
+        margin-left: 6in; /* Margin to make space for the vitals container */
         margin-top: 20px; /* Space between vitals and last measurements */
         padding: 10px;
         background: #0a2136; /* Match background color */
@@ -128,24 +152,18 @@
         background-color: #0a8a9c;
     }
 
-    #iframe-container {
-        display: none; /* Hide initially */
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 4in; /* Adjust as needed */
-        height: 100%; /* Full height */
-        background: #fff; /* Background color for iframe */
-        border-left: 2px solid #0eb3c7; /* Border color */
-        padding: 10px;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        overflow: hidden; /* Ensure no overflow */
+    .hidden {
+        display: none;
     }
 
-    #iframe-container iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
+    #conference-iframe {
+        display: none; /* Hide initially */
+        width: 80%; /* Adjust width as needed */
+        height: 80%; /* Adjust height as needed */
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #000; /* Background color to match iframe */
     }
     </style>
 </head>
@@ -198,33 +216,18 @@
     </div>
 
     <div id="ivrentry" class="main site join hidden">
-        <form onSubmit="return submitIVREntry();">
-            <label for="id_room" class="vh">Enter the target extension</label>
-            <input type="text" value="" name="room" id="id_room" placeholder="Enter the target extension" required class="webrtcinput">
-            <input type="button" value="Join Conference" name="join" id="id_join" class="webrtcbutton" onClick="submitIVREntry();">
+        <form>
+            <div class="cf">
+                <label for="ivr_number">Enter IVR Number:</label>
+                <input type="text" name="ivr_number" id="ivr_number" class="webrtcinput">
+            </div>
+            <input type="button" value="Submit" class="webrtcbutton" onClick="submitIVRNumber();">
         </form>
     </div>
 
-    <div id="maincontent" class="main cf hidden">
-        <section class="top">
-            <aside class="participants">
-                <h2 id="rosterheading">Participants</h2>
-                <div id="rosterlist" class="rosterlist">
-                    <ul id="rosterul"></ul>
-                </div>
-                <div id="selfview" class="selfview" hidden>
-                    <video id="selfvideo" autoplay="autoplay" playsinline="playsinline" muted="true"></video>
-                </div>
-            </aside>
-            <div id="videocontainer" class="videocontainer">
-                <video width="100%" height="100%" id="remotevideo" autoplay="autoplay" playsinline="playsinline"></video>
-            </div>
-        </section>
-    </div>
-    
-    <!-- Iframe container -->
-    <div id="iframe-container">
-        <iframe id="conference-iframe" src="" frameborder="0"></iframe>
+    <div id="maincontent" class="hidden">
+        <!-- Content to show after iframe load -->
+        <iframe id="conference-iframe" src=""></iframe>
     </div>
 </div>
 </body>
