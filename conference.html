@@ -7,8 +7,8 @@
 <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
 <script type="text/javascript" src="webui.js"></script>
 <style>
-  /* Style for the video container */
-  #health-video-container {
+  /* Style for the GIF container */
+  #health-gif-container {
     position: absolute;
     top: 50px;
     left: 0;
@@ -20,8 +20,8 @@
     z-index: 1000;
   }
 
-  /* Style for video element */
-  video {
+  /* Style for GIF element */
+  img {
     width: 100%;
     height: 100%;
     object-fit: cover; /* Maintain aspect ratio and fill the container */
@@ -51,22 +51,20 @@ window.onload = function() {
     var checkVideoContainer = setInterval(function() {
         var videoContainer = document.getElementById("videocontainer");
         if (videoContainer) {
-            // Show video container when videocontainer is present
-            document.getElementById("health-video-container").style.display = 'block';
+            // Show GIF container when videocontainer is present
+            document.getElementById("health-gif-container").style.display = 'block';
             
-            // Load video into the container
-            var videoContainer = document.getElementById("health-video-container");
-            var videoElement = document.createElement("video");
-            videoElement.src = "images/healthcareGraph.mp4"; // Replace with the path to your MP4 file
-            videoElement.autoplay = true;
-            videoElement.controls = true;
-            videoElement.style.width = "100%";
-            videoElement.style.height = "100%";
-            videoElement.style.objectFit = "cover"; // Maintain aspect ratio and fill the container
-            videoContainer.innerHTML = ""; // Clear any existing content
-            videoContainer.appendChild(videoElement);
+            // Load GIF into the container
+            var gifContainer = document.getElementById("health-gif-container");
+            var gifElement = document.createElement("img");
+            gifElement.src = "img/healthcareGraph.gif"; // Replace with the path to your GIF file
+            gifElement.style.width = "100%";
+            gifElement.style.height = "100%";
+            gifElement.style.objectFit = "cover"; // Maintain aspect ratio and fill the container
+            gifContainer.innerHTML = ""; // Clear any existing content
+            gifContainer.appendChild(gifElement);
 
-            clearInterval(checkVideoContainer); // Stop checking after video is shown
+            clearInterval(checkVideoContainer); // Stop checking after GIF is shown
         }
     }, 500); // Check every 500ms
 };
@@ -144,8 +142,8 @@ window.onload = function() {
         </footer>
     </div>
 
-    <!-- Add the video container here, initially hidden -->
-    <div id="health-video-container"></div>
+    <!-- Add the GIF container here, initially hidden -->
+    <div id="health-gif-container"></div>
 
     <!-- END Content -->
     <div id="footer"> </div>
