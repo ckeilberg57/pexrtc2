@@ -7,7 +7,8 @@
 <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
 <script type="text/javascript" src="webui.js"></script>
 <style>
-  #health-form-iframe {
+  /* Style for the video container */
+  #health-video-container {
     position: absolute;
     top: 50px;
     left: 0;
@@ -19,11 +20,11 @@
     z-index: 1000;
   }
 
-  /* Style for iframe content */
-  iframe {
+  /* Style for video element */
+  video {
     width: 100%;
     height: 100%;
-    border: none;
+    object-fit: cover; /* Maintain aspect ratio and fill the container */
   }
 </style>
 <script type='text/javascript'>
@@ -50,36 +51,22 @@ window.onload = function() {
     var checkVideoContainer = setInterval(function() {
         var videoContainer = document.getElementById("videocontainer");
         if (videoContainer) {
-            // Show iframe when videocontainer is present
-            document.getElementById("health-form-iframe").style.display = 'block';
+            // Show video container when videocontainer is present
+            document.getElementById("health-video-container").style.display = 'block';
             
-            // Load content into the iframe
-            var iframe = document.getElementById("health-form-iframe");
-            var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            iframeDoc.open();
-            iframeDoc.write(`
-              <html>
-                <body style="color: white; background-color: #0a2136; font-family: Arial, sans-serif; padding: 10px;">
-                  <h2>Enter Your Current Health Data</h2>
-                  <form>
-                    <label>Current Heart Rate:</label><br>
-                    <input type="text" name="heart-rate" style="width: 100%;"><br><br>
+            // Load video into the container
+            var videoContainer = document.getElementById("health-video-container");
+            var videoElement = document.createElement("video");
+            videoElement.src = "images/healthcareGraph.mp4"; // Replace with the path to your MP4 file
+            videoElement.autoplay = true;
+            videoElement.controls = true;
+            videoElement.style.width = "100%";
+            videoElement.style.height = "100%";
+            videoElement.style.objectFit = "cover"; // Maintain aspect ratio and fill the container
+            videoContainer.innerHTML = ""; // Clear any existing content
+            videoContainer.appendChild(videoElement);
 
-                    <label>Current O2 Level:</label><br>
-                    <input type="text" name="oxygen-level" style="width: 100%;"><br><br>
-
-                    <label>Blood Pressure (Systolic/Diastolic):</label><br>
-                    <input type="text" name="blood-pressure-systolic" placeholder="Systolic" style="width: 48%;">
-                    <input type="text" name="blood-pressure-diastolic" placeholder="Diastolic" style="width: 48%;"><br><br>
-
-                    <input type="submit" value="Submit">
-                  </form>
-                </body>
-              </html>
-            `);
-            iframeDoc.close();
-
-            clearInterval(checkVideoContainer); // Stop checking after iframe is shown
+            clearInterval(checkVideoContainer); // Stop checking after video is shown
         }
     }, 500); // Check every 500ms
 };
@@ -157,8 +144,8 @@ window.onload = function() {
         </footer>
     </div>
 
-    <!-- Add the iframe here, initially hidden -->
-    <iframe id="health-form-iframe"></iframe>
+    <!-- Add the video container here, initially hidden -->
+    <div id="health-video-container"></div>
 
     <!-- END Content -->
     <div id="footer"> </div>
