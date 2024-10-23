@@ -1,2 +1,2 @@
 # pexrtc2
-Kyle's Example
+With Sample Telemetry
