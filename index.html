@@ -1,63 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
+<!DOCTYPE html>
+<html lang="en-us">
 <head>
-    <title>Pexip Health</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pexip Health Consultation</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
-    <meta name="robots" content="noindex, nofollow" />
-    <script type='text/javascript'>
-    window.onload = function() {
-        function generateAlias() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let alias = 'ph';
-            for (let i = 0; i < 15; i++) {
-                alias += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return alias;
-        }
-
-        // Add event listener for the generate button
-        document.getElementById('generate-button').addEventListener('click', function() {
-            const alias = generateAlias();
-            document.getElementById('id_alias').value = alias; // Populate the alias in the conference alias input field
-            document.getElementById('alias-display').innerText = alias; // Display the alias
-            document.getElementById('generate-button-container').style.display = 'none'; // Hide the button
-
-            // Show the form fields and buttons
-            document.getElementById('id_form').style.display = 'block';
-        });
-
-        // Update form fields based on user selection
-        document.getElementById('role-select').addEventListener('change', function() {
-            var role = this.value;
-            var nameField = document.getElementById('id_name');
-            var providerSelect = document.getElementById('provider-select');
-            var providerDisplay = document.getElementById('provider-display');
-
-            if (role === 'provider') {
-                providerSelect.style.display = 'block';
-                nameField.style.display = 'none';
-                providerSelect.addEventListener('change', function() {
-                    var providerName = this.value;
-                    providerDisplay.innerText = providerName;
-                    nameField.value = providerName; // Populate name field with selected provider
-                    providerSelect.style.display = 'none'; // Hide provider select after selection
-                });
-            } else if (role === 'patient') {
-                providerSelect.style.display = 'none';
-                providerDisplay.innerText = '';
-                nameField.style.display = 'block';
-                nameField.value = ''; // Clear the name field
-            } else {
-                providerSelect.style.display = 'none';
-                providerDisplay.innerText = '';
-                nameField.style.display = 'none';
-                nameField.value = ''; // Clear the name field if no role is selected
-            }
-        });
-    }
-    </script>
-    <meta name="robots" content="NONE,NOARCHIVE" />
+    <script type="text/javascript" src="https://cklab-edges.ck-collab-engtest.com/static/webrtc/js/pexrtc.js"></script>
     <style>
         /* Center the generate button */
         #generate-button-container {
@@ -67,101 +15,130 @@
 
         #generate-button {
             display: inline-block;
-            background-color: #0ebec7; /* Match button color */
+            background-color: #0ebec7;
             color: white;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
             border-radius: 5px;
-            margin-bottom: 20px;
         }
 
-        #generate-button:hover {
-            background-color: #0a9a9b; /* Darker shade on hover */
-        }
-
-        #alias-display {
-            font-weight: bold;
-            font-size: 18px;
-            margin-top: 10px;
-        }
-
-        /* Hide form fields and buttons initially */
-        #id_form {
+        .form-container, .video-container { 
             display: none;
+            margin: 10px 0;
         }
 
-        /* Hide provider select and name field initially */
-        #provider-select {
-            display: none;
-        }
-
-        #id_name {
-            display: none;
+        video {
+            width: 100%;
+            height: 300px;
+            background-color: #333;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 
-<body class="home">
-
-<!-- Generate Alias Button -->
+<body>
 <div id="generate-button-container">
     <button id="generate-button">Generate Medical Consultation Alias</button>
     <div id="alias-display"></div>
 </div>
 
-<!-- Container -->
-<div id="container" class="site">
-    <!-- Header -->
-    <header id="header" class="branding" role="banner">
-        <!-- <img src="img/pexhealthlogo.png" alt="MAIN LOGO"> -->
-        <!-- <h1>Connect</h1> -->
-    </header>
-    <!-- END Header -->
-
-    <!-- Content -->
-    <div id="maincontent" class="main site join">
-        <form id="id_form" action="conference.html" method="get">
-            <label for="id_alias" class="vh">Enter the conference alias</label>
-            <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput">
-
-            <label for="role-select" class="vh">You are a</label>
-            <select id="role-select" class="webrtcinput">
-                <option value="">Select role</option>
-                <option value="provider">Provider</option>
-                <option value="patient">Patient</option>
-            </select>
-
-            <label for="provider-select" class="vh" id="provider-label">Select a provider</label>
-            <select id="provider-select" class="webrtcinput">
-                <option value="">Select a provider</option>
-                <option value="Dr. JDemo">Dr. JDemo</option>
-                <option value="Dr. MDemo">Dr. MDemo</option>
-                <option value="Dr. CDemo">Dr. CDemo</option>
-            </select>
-            <div id="provider-display" class="vh"></div>
-
-            <label for="id_name" class="vh">Enter your name</label>
-            <input type="text" value="" name="name" id="id_name" placeholder="Enter your name" required class="webrtcinput">
-
-            <select name="bandwidth" class="webrtcinput" id="id_bandwidth">
-                <option value="1920">Maximum Bandwidth (1920kbps)</option>
-                <option value="1280" selected>High Bandwidth (1280kbps)</option>
-                <option value="576">Medium Bandwidth (576kbps)</option>
-                <option value="192">Low Bandwidth (192kbps)</option>
-            </select>
-
-            <input type="submit" value="Join Conference" name="join" id="id_join" class="webrtcbutton">
-            <input type="submit" value="Present Screen Only" name="join_pres" id="id_join_pres" class="webrtcbutton">
-            <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
-        </form>
-    </div>
-    <!-- END Content -->
-
-    <div id="footer"> </div>
+<!-- Role Selection Form -->
+<div class="form-container" id="role-form">
+    <h3>Select Your Role:</h3>
+    <button onclick="selectRole('patient')">Patient</button>
+    <button onclick="selectRole('provider')">Provider</button>
+    <button onclick="selectRole('both')">Both</button>
 </div>
-<!-- END Container -->
+
+<!-- Patient Form -->
+<div class="form-container" id="patient-form">
+    <label for="patient-name">Enter your name:</label>
+    <input type="text" id="patient-name" placeholder="Your Name" required>
+    <button onclick="joinConference('guest')">Join as Patient</button>
+</div>
+
+<!-- Provider Form -->
+<div class="form-container" id="provider-form">
+    <label for="provider-select">Select a Provider:</label>
+    <select id="provider-select">
+        <option value="Dr. JDemo">Dr. JDemo</option>
+        <option value="Dr. MDemo">Dr. MDemo</option>
+        <option value="Dr. CDemo">Dr. CDemo</option>
+    </select>
+    <button onclick="joinConference('host')">Join as Provider</button>
+</div>
+
+<!-- Video Containers -->
+<div class="video-container" id="patient-video">
+    <video id="patient-video-element" autoplay controls></video>
+</div>
+
+<div class="video-container" id="provider-video">
+    <video id="provider-video-element" autoplay controls></video>
+</div>
+
+<script>
+    // Generate alias function
+    function generateAlias() {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let alias = 'ph';
+        for (let i = 0; i < 15; i++) {
+            alias += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return alias;
+    }
+
+    // Show role selection form on button click
+    document.getElementById('generate-button').addEventListener('click', () => {
+        const alias = generateAlias();
+        document.getElementById('alias-display').innerText = `Alias: ${alias}`;
+        document.getElementById('role-form').style.display = 'block';
+    });
+
+    // Handle role selection and display appropriate form
+    function selectRole(role) {
+        document.getElementById('role-form').style.display = 'none';
+        if (role === 'patient') {
+            document.getElementById('patient-form').style.display = 'block';
+        } else if (role === 'provider') {
+            document.getElementById('provider-form').style.display = 'block';
+        } else if (role === 'both') {
+            joinConference('both');
+        }
+    }
+
+    // Start video conference based on role
+    function joinConference(role) {
+        if (role === 'guest') {
+            startVideo('patient-video-element', 'guest');
+            document.getElementById('patient-video').style.display = 'block';
+        } else if (role === 'host') {
+            const providerName = document.getElementById('provider-select').value;
+            startVideo('provider-video-element', 'host', providerName);
+            document.getElementById('provider-video').style.display = 'block';
+        } else if (role === 'both') {
+            startVideo('provider-video-element', 'host', 'Provider');
+            startVideo('patient-video-element', 'guest');
+            document.getElementById('provider-video').style.display = 'block';
+            document.getElementById('patient-video').style.display = 'block';
+        }
+    }
+
+    // Initialize and play video based on role
+    function startVideo(videoElementId, role, name = '') {
+        const videoElement = document.getElementById(videoElementId);
+        const alias = document.getElementById('alias-display').innerText.split(': ')[1];
+        const bandwidth = 1280; // Example bandwidth
+
+        const url = `conference.html?alias=${alias}&role=${role}&name=${name}&bandwidth=${bandwidth}`;
+        console.log(`Starting ${role} conference: ${url}`);
+        
+        // Simulate video loading (in a real scenario, you would connect to the actual WebRTC stream)
+        videoElement.src = 'img/healthcareGraph2.mp4';  // Placeholder video
+    }
+</script>
 
 </body>
 </html>
